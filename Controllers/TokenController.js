@@ -8,7 +8,7 @@ const TokenController = {
                 admin: user.admin,
             },
             process.env.KEY_ACCESS_TOKEN_JWT,
-            {expiresIn: "600s"}
+            {expiresIn: "30s"}
         );
     },
 
@@ -18,10 +18,10 @@ const TokenController = {
                 id: user.id,
                 admin: user.admin,
             },
-            process.env.KEY_ACCESS_TOKEN_JWT,
+            process.env.KEY_REFRESH_TOKEN_JWT,
             {expiresIn: "30d"}
         );
-    }
+    },
 }
 
 module.exports = TokenController;
