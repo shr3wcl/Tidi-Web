@@ -1,6 +1,7 @@
 const UserModel = require("../Models/User");
 const bcrypt = require("bcrypt");
 const tokenOBJ = require("./TokenController");
+const jwt = require('jsonwebtoken');
 
 const AuthController = {
     register: async (req, res) => {
@@ -40,13 +41,19 @@ const AuthController = {
                 }else{
                     const accessToken = tokenOBJ.generateAccessToken(user);
                     const refreshToken = tokenOBJ.generateRefreshToken(user);
+                    res.cookie("refreshToken", refreshToken, {
+                        httpOnly: true,
+                        secure: false,
+                        path: '/',
+                        sameSite: "strict",
+                    });
                     res.setHeader("token", "bearer " + accessToken);
                     const {password, ...others} = user._doc;
-                    req.session.user = user;
-                    req.session.token = {
-                        accessToken: 'Bearer '+ accessToken,
-                        refreshToken: refreshToken
-                    }
+                    // req.session.user = user;
+                    // req.session.token = {
+                    //     accessToken: 'Bearer '+ accessToken,
+                    //     refreshToken: refreshToken
+                    // }
                     res.status(200).json({message: "Đăng nhập thành công", user: {...others}, token: {accessToken: accessToken, refreshToken: refreshToken}});
                 }
             }
@@ -64,7 +71,46 @@ const AuthController = {
         }catch(err){
             res.status(500).json(err);
         }
-    }
+    },
+
+    requestRefreshToken: async (req, res) => {
+        try{
+
+            const refreshToken = await req.headers.cookie.split(";")[1].trim().split("=")[1];
+
+            if (!refreshToken) {
+                res.status(401).json("You're not authenticated")
+            } else {
+                jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN_JWT, async (err, user) => {
+                    if (err) {
+                        console.log(err);
+                    }else{
+                        console.log(user);
+                        const newAccessToken = tokenOBJ.generateAccessToken(user);
+                        const newRefreshToken = tokenOBJ.generateRefreshToken(user);
+
+                        res.setHeader("token", "bearer " + newAccessToken);
+                        res.cookie("refreshToken", newRefreshToken, {
+                            httpOnly: true,
+                            secure: false,
+                            path: "/",
+                            sameSite: "strict",
+                        });
+                        res.status(200).json({
+                            message: "Refresh thành công",
+                            token: {
+                                accessToken: newAccessToken,
+                                refreshToken: newRefreshToken,
+                            }
+                        });
+                    }
+                    // refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+                });
+            }
+        }catch(err){
+            res.status(500).json(err);
+        }
+    },
 }
 
 module.exports = AuthController;
