@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 
-const ManagerSchema = mongoose.Schema({
+const CommandSchema = mongoose.Schema({
+    idBlog: {
+        type: String,
+        require: true,
+    },
+
     idUser: {
         type: String,
         require: true,
     },
-    idProject: {
-        type: String,
-        require: true,
-    },
-    role: {
+
+    content: {
         type: String,
         require: true,
     }
-}, {timestamps: true});
+},  { timestamps: true });
 
-module.exports = mongoose.model("Manager", ManagerSchema);
+module.exports = mongoose.model('Command', CommandSchema);
