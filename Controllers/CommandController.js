@@ -37,6 +37,39 @@ const CommandController = {
         } catch (err) {
             res.status(500).json("Lỗi");
         }
+    },
+
+    editCommand: async (req, res) => {
+        try{
+            const idCommand = req.params.idCommand;
+            if(idCommand){
+                const command = await CommandOBJ.findOne({_id: idCommand});
+                if(command){
+                    command.content = req.body.content;
+                    await command.save();
+                    res.status(200).json({message: "Sửa bình luận thành công"});
+                }
+            }else{
+                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            }
+        }catch(err){
+            console.log(err);
+            res.status(500).json("Lỗi");
+        }
+    },
+
+    deleteCommand: async (req, res) => {
+        try{
+            const idCommand = req.params.idCommand;
+            if(idCommand){
+                await CommandOBJ.findByIdAndDelete({_id: idCommand});
+                res.status(200).json({message: "Xoá bình luận thành công"});
+            }else{
+                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            }
+        }catch(err){
+            res.status(500).json("Lỗi");
+        }
     }
 }
 

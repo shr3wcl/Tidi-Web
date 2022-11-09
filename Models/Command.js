@@ -14,6 +14,12 @@ const CommandSchema = mongoose.Schema({
     content: {
         type: String,
         require: true,
+    },
+
+    favorites: {
+        type: Number,
+        require: false,
+        default: 0
     }
 },  { timestamps: true });
 

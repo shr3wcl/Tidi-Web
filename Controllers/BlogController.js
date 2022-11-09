@@ -53,6 +53,23 @@ const BlogController = {
         }
     },
 
+    editBlog: async (req, res) => {
+        try{
+            const idBlog = req.params?.idBlog;
+            if(idBlog){
+                const blog = await BlogModel.findOne({_id: idBlog});
+                blog.title = req.body.title;
+                blog.content = req.body.content;
+                await blog.save();
+                res.status(200).json({message: "Sửa nội dung blog thành công"});
+            }else{
+                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            }
+        }catch(err){
+            res.status(500).json("Lỗi");
+        }
+    },
+
     deleteBlog: async (req, res) => {
         try{
             const idBlog = req.params?.idBlog;
@@ -65,7 +82,7 @@ const BlogController = {
         }catch(err){
             res.status(500).json({message: "Lỗi"});
         }
-    }
+    },
 }
 
 module.exports = BlogController;
