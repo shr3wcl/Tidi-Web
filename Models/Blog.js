@@ -12,9 +12,16 @@ const BlogSchema = mongoose.Schema({
         minLength: 1,
         maxLength: 40
     },
+
     content: {
         type: String,
         require: true,
+    },
+
+    favorites: {
+        type: Number,
+        require: false,
+        default: 0
     }
 
 }, {timestamps: true});
