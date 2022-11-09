@@ -7,6 +7,7 @@ const authMiddleware = {
             if (accessToken) {
                 accessToken = accessToken.split(" ")[1];
                 jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
+                    console.log(user);
                     if (err) {
                         res.status(404).json({ message: "Token không hợp lý" });
                     } else {
