@@ -1,5 +1,6 @@
 const BlogModel = require("../Models/Blog");
 const UserModel = require("../Models/User");
+const FavouriteModel = require("../Models/Favourite");
 const jwt = require('jsonwebtoken');
 
 const BlogController = {
@@ -22,13 +23,16 @@ const BlogController = {
             const idBlog = req.params.idBlog;
             if(idBlog){
                 const blog = await BlogModel.findOne({_id: idBlog});
+                const blogFavourite = await FavouriteModel.findOne({idBlog: blog._id}) ?? 0;
+                const data = { ...blog._doc, favourites: blogFavourite.quantity};
                 if(blog){
-                    res.status(200).json({message: "Lấy data thành công", blog: blog});
+                    res.status(200).json({message: "Lấy data thành công", blog: data});
                 }else{
                     res.status(404).json({message: "Yêu cầu không hợp lệ"});
                 }
             }
         }catch(err){
+            console.log(err);
             res.status(404).json({message: "Lỗi"});
         }
     },
@@ -44,11 +48,17 @@ const BlogController = {
                 });
 
                 const blog = await newBlog.save();
+                blogFavourites = FavouriteModel({
+                    idBlog: blog._id,
+                    quantity: 0,
+                });
+                await blogFavourites.save();
                 res.status(200).json({message: "Đã thêm blog thành công", blog: blog});
             } else {
                 res.status(404).json({message: "Thêm blog không thành công"});
             }
         } catch (err) {
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
@@ -83,6 +93,36 @@ const BlogController = {
             res.status(500).json({message: "Lỗi"});
         }
     },
+
+    increaseFavorites: async (req, res) => {
+        try{
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+            const idBlog = req.params?.idBlog;
+            if(idBlog){
+                const blog = await FavouriteModel.findOne({idBlog: idBlog}, (err, favouriteBlog) => {
+                    if(err){
+                        res.status(403).json({message: "Lỗi"});
+                    }
+                    else{
+                        console.log(favouriteBlog);
+                    }
+                });
+                if(blog){
+                    blog.quantity++;
+                    blog.save();
+                    res.status(200).json({message: "Đã like"});
+                }
+                else{
+                    res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                }
+            }
+            else{
+                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            }
+        }catch(err){
+            res.status(500).json("Lỗi");
+        }
+    }
 }
 
 module.exports = BlogController;

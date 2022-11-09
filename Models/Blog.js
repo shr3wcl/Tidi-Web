@@ -18,12 +18,6 @@ const BlogSchema = mongoose.Schema({
         require: true,
     },
 
-    favorites: {
-        type: Number,
-        require: false,
-        default: 0
-    }
-
 }, {timestamps: true});
 
 module.exports = mongoose.model("Blog", BlogSchema);
