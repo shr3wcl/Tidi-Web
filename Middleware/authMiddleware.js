@@ -7,46 +7,64 @@ const authMiddleware = {
             if (accessToken) {
                 accessToken = accessToken.split(" ")[1];
                 jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
-                    console.log(user);
                     if (err) {
-                        res.status(404).json({ message: "Token không hợp lý" });
+                        res.status(404).json({message: "Token không hợp lý"});
                     } else {
                         req.user = user;
                         next();
                     }
                 });
             } else {
-                res.status(403).json({ message: "Bạn không có quyền truy cập" });
+                res.status(403).json({message: "Bạn không có quyền truy cập"});
             }
         } catch (err) {
-            res.status(500).json({ message: "Yêu cầu không hợp lệ" });
+            res.status(500).json({message: "Yêu cầu không hợp lệ"});
         }
     },
 
     verifyAdmin: (req, res, next) => {
         try {
-            authMiddleware.verifyAccessToken(req, res, () => {
-                if (req.user.admin === true) {
-                    next();
-                }
-                else {
-                    res.status(403).json({ message: "Bạn không có quyền hạn này" });
-                }
-            });
+            const admin = jwt.decode(req.headers.token.split(" ")[1]).admin ?? false;
+
+            if (admin === true) {
+                next();
+            } else {
+                res.status(403).json({message: "Bạn không có quyền hạn này"});
+            }
         } catch (err) {
-            res.status(500).json({ message: "Yêu cầu không hợp lệ" });
+            console.log(err);
+            res.status(500).json({message: "Yêu cầu không hợp lệ"});
         }
     },
 
-    verifyOwner: (req, res, next) => {
-        authMiddleware.verifyAccessToken(req, res, () => {
-            if (req.user.id === req.params.id) {
-                next();
+    verifyOwnerOrAdmin: async (req, res, next) => {
+        try{
+            const admin = jwt.decode(req.headers.token.split(" ")[1])?.admin ?? false;
+            let accessToken = req.headers.token;
+            let checkOwner = 1;
+            if (accessToken) {
+                accessToken = accessToken.split(" ")[1] ?? false;
+                jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
+                    if (err) {
+                        if(admin){
+                            next();
+                        }else {
+                            res.status(404).json({message: "Token không hợp lý"});
+                        }
+                    } else {
+                        next();
+                    }
+                });
+            }else{
+                if(admin){
+                    next();
+                }else{
+                    res.status(403).json({message: "Bạn không có quyền truy cập"});
+                }
             }
-            else {
-                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
-            }
-        })
+        }catch(err){
+            res.status(500).json({message: "Yêu cầu không hợp lệ"});
+        }
     }
 }
 

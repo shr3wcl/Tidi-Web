@@ -28,13 +28,14 @@ const CommandController = {
         try {
             const idBlog = req.params.idBlog;
             if(idBlog){
-                const command = await CommandOBJ.find({idBlog: idBlog});
+                const command = await CommandOBJ.find({idBlog: idBlog}).sort('-createdAt');
                 res.status(200).json({message: "Lấy bình luận thành công", command: command});
             }
             else {
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
         } catch (err) {
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
