@@ -27,5 +27,7 @@ route.post("/command/edit/:idCommand", authMiddleware.verifyOwnerOrAdmin, Comman
 
 //Project
 route.post("/project/add", authMiddleware.verifyAccessToken, ProjectController.addProject);
+route.delete("/project/delete/:idProject", authMiddleware.verifyAccessToken, ProjectController.deleteProject);
+route.post("/project/edit/:idProject", authMiddleware.verifyAccessToken, ProjectController.editProject);
 
 module.exports = route;
