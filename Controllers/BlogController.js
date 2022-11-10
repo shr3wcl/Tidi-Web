@@ -8,7 +8,7 @@ const BlogController = {
         try {
             const blogs = await BlogModel.find();
             res.status(200).json({blogs: blogs});
-        }catch (err){
+        } catch (err) {
             res.status(500).json({message: "Lỗi"});
         }
     },
@@ -28,19 +28,19 @@ const BlogController = {
     },
 
     getDetailBlog: async (req, res) => {
-        try{
+        try {
             const idBlog = req.params.idBlog;
-            if(idBlog){
+            if (idBlog) {
                 const blog = await BlogModel.findOne({_id: idBlog});
                 const blogFavourite = await FavouriteModel.findOne({idBlog: blog._id}) ?? 0;
-                const data = { ...blog._doc, favourites: blogFavourite.quantity};
-                if(blog){
+                const data = {...blog._doc, favourites: blogFavourite.quantity};
+                if (blog) {
                     res.status(200).json({message: "Lấy data thành công", blog: data});
-                }else{
+                } else {
                     res.status(404).json({message: "Yêu cầu không hợp lệ"});
                 }
             }
-        }catch(err){
+        } catch (err) {
             console.log(err);
             res.status(404).json({message: "Lỗi"});
         }
@@ -73,62 +73,76 @@ const BlogController = {
     },
 
     editBlog: async (req, res) => {
-        try{
+        try {
             const idBlog = req.params?.idBlog;
-            if(idBlog){
+            if (idBlog) {
                 const blog = await BlogModel.findOne({_id: idBlog});
                 blog.title = req.body.title;
                 blog.content = req.body.content;
                 await blog.save();
                 res.status(200).json({message: "Sửa nội dung blog thành công"});
-            }else{
+            } else {
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     },
 
     deleteBlog: async (req, res) => {
-        try{
+        try {
             const idBlog = req.params?.idBlog;
-            if(idBlog){
+            if (idBlog) {
                 await BlogModel.findByIdAndDelete(idBlog);
                 res.status(200).json({message: "Đã xoá thành công"});
-            }else{
+            } else {
                 res.status(403).json({message: "Xoá không thành công"});
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json({message: "Lỗi"});
         }
     },
 
     increaseFavorites: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idBlog = req.params?.idBlog;
-            if(idBlog){
+            if (idBlog) {
                 const blog = await FavouriteModel.findOne({idBlog: idBlog}, (err, favouriteBlog) => {
-                    if(err){
+                    if (err) {
                         res.status(403).json({message: "Lỗi"});
-                    }
-                    else{
+                    } else {
                         console.log(favouriteBlog);
                     }
                 });
-                if(blog){
+                if (blog) {
                     blog.quantity++;
                     blog.save();
                     res.status(200).json({message: "Đã like"});
-                }
-                else{
+                } else {
                     res.status(403).json({message: "Yêu cầu không hợp lệ"});
                 }
-            }
-            else{
+            } else {
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
-        }catch(err){
+        } catch (err) {
+            res.status(500).json("Lỗi");
+        }
+    },
+
+    searchBlog: async (req, res) => {
+        try {
+            const key = req.body.key;
+            const data = await BlogModel.find({
+                $or: [
+                    {title: {$regex: '.*' + key + '.*'}},
+                    {content: {$regex: '.*' + key + '.*'}}
+                ]
+            });
+            console.log(data);
+            res.status(200).json({data: data});
+        } catch (err) {
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     }
