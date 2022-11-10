@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const tokenOBJ = require("./TokenController");
 const jwt = require('jsonwebtoken');
 
+
 const AuthController = {
     register: async (req, res) => {
         try {

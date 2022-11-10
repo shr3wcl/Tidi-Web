@@ -4,6 +4,15 @@ const FavouriteModel = require("../Models/Favourite");
 const jwt = require('jsonwebtoken');
 
 const BlogController = {
+    getAllBlogAdmin: async (req, res) => {
+        try {
+            const blogs = await BlogModel.find();
+            res.status(200).json({blogs: blogs});
+        }catch (err){
+            res.status(500).json({message: "Lỗi"});
+        }
+    },
+
     getAllBlogs: async (req, res) => {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
