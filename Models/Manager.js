@@ -2,18 +2,20 @@ const mongoose = require('mongoose');
 
 const ManagerSchema = mongoose.Schema({
     idUser: {
-        type: String,
-        require: true,
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+        required: true,
     },
 
     idProject: {
-        type: String,
-        require: true,
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'Project',
+        required: true,
     },
 
     role: {
-        type: String,
-        require: true,
+        type: Number,
+        required: true,
     }
 }, {timestamps: true});
 

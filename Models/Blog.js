@@ -2,20 +2,21 @@ const mongoose = require('mongoose');
 
 const BlogSchema = mongoose.Schema({
     idOwner: {
-        type: String,
-        require: true
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+        required: true
     },
 
     title: {
         type: String,
-        require: true,
+        required: true,
         minLength: 1,
         maxLength: 40
     },
 
     content: {
         type: String,
-        require: true,
+        required: true,
     },
 
 }, {timestamps: true});

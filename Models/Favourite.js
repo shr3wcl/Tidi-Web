@@ -3,17 +3,17 @@ const mongoose = require('mongoose');
 const FavouriteSchema = mongoose.Schema({
     idBlog: {
         type: String,
-        require: true
+        required: true
     },
 
     idUser: {
         type: String,
-        require: true,
+        required: true,
     },
 
     quantity: {
         type: Number,
-        require: true,
+        required: true,
         default: 0
     }
 
