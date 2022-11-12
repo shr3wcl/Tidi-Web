@@ -5,6 +5,7 @@ const authMiddleware = require("../Middleware/authMiddleware");
 const UserController = require("../Controllers/UserController");
 const ProjectController = require("../Controllers/ProjectController");
 const ManagerController = require("../Controllers/ManagerController");
+const NoteController = require("../Controllers/NoteController");
 
 //Infomation
 route.get("/info/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.getInfo);
@@ -37,5 +38,12 @@ route.post("/manager/add/:idProject", authMiddleware.verifyOwnerOrAdmin, Manager
 route.delete("/manager/delete/:idProject", authMiddleware.verifyOwnerOrAdmin, ManagerController.deleteMember);
 route.post("/manager/edit/:idProject", authMiddleware.verifyOwnerOrAdmin, ManagerController.editRoleMember);
 route.get("/manager/member/:idProject", authMiddleware.verifyOwnerOrAdmin, ManagerController.getAllMember);
+
+//Note
+route.get("/project/:idProject/note/getall", authMiddleware.verifyAccessToken, NoteController.getAllNote);
+route.post("/project/:idProject/note/add", authMiddleware.verifyAccessToken, NoteController.addNote);
+route.delete("/project/note/delete/:idNote", authMiddleware.verifyAccessToken, NoteController.deleteNote);
+route.post("/project/note/edit/:idNote", authMiddleware.verifyAccessToken, NoteController.editNote);
+route.get("/project/note/detail/:idNote", authMiddleware.verifyAccessToken, NoteController.getDetail);
 
 module.exports = route;
