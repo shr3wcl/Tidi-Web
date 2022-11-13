@@ -8,7 +8,6 @@ const TaskController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
-
             if(idProject && userID && checkProject){
                 const tasks = await TaskModel.find({idProject: idProject});
                 res.status(200).json(tasks);
@@ -25,12 +24,13 @@ const TaskController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idTask = req.params.idTask;
             const task = await TaskModel.findById(idTask);
-            if(note){
+            if(task){
                 res.status(200).json(task);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
         }catch(err){
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
@@ -41,7 +41,7 @@ const TaskController = {
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
             if(idProject && userID && checkProject) {
-                const task = await TodoModel({
+                const task = await TaskModel({
                     idProject: idProject,
                     title: req.body.title,
                     description: req.body.description,
@@ -55,6 +55,7 @@ const TaskController = {
                 res.status(403).json({message: "Yêu cầu không hơp lệ"});
             }
         }catch(err){
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },

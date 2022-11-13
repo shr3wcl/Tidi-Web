@@ -25,7 +25,7 @@ const TodoController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idTodo = req.params.idTodo;
             const todo = await TodoModel.findById(idTodo);
-            if(note){
+            if(todo){
                 res.status(200).json(todo);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
