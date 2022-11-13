@@ -28,6 +28,8 @@ app.use(session({
 }
 ))
 
+
+app.get("/test", (req, res) => res.send("Hello"));
 app.use("/v1/auth", authRoute);
 app.use("/v1/admin", adminRoute);
 app.use("/v1/user", userRoute);
