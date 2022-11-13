@@ -31,5 +31,5 @@ app.use(session({
 app.use("/v1/auth", authRoute);
 app.use("/v1/admin", adminRoute);
 app.use("/v1/user", userRoute);
-
-app.listen(8000, () => console.log("Server is running..."));
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log("Server is running..."));
