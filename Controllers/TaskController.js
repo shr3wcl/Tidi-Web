@@ -1,8 +1,8 @@
-const TodoModel = require("../Models/Todo");
+const TaskModel = require("../Models/Task");
 const ProjectModel = require("../Models/Project");
 const jwt = require("jsonwebtoken");
 
-const TodoController = {
+const TaskController = {
     getAll: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
@@ -10,8 +10,8 @@ const TodoController = {
             const checkProject = await ProjectModel.findById(idProject);
 
             if(idProject && userID && checkProject){
-                const todo = await TodoModel.find({idProject: idProject});
-                res.status(200).json(todo);
+                const tasks = await TaskModel.find({idProject: idProject});
+                res.status(200).json(tasks);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -23,10 +23,10 @@ const TodoController = {
     getDetail: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const todo = await TodoModel.findById(idTodo);
+            const idTask = req.params.idTask;
+            const task = await TaskModel.findById(idTask);
             if(note){
-                res.status(200).json(todo);
+                res.status(200).json(task);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -35,20 +35,22 @@ const TodoController = {
         }
     },
 
-    addTodo: async (req, res) => {
+    addTask: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
             if(idProject && userID && checkProject) {
-                const todo = await TodoModel({
+                const task = await TodoModel({
                     idProject: idProject,
                     title: req.body.title,
-                    content: req.body.content,
+                    description: req.body.description,
+                    dayStart: req.body.dayStart,
+                    dayEnd: req.body.dayEnd,
                     state: req.body.state,
                 });
-                await todo.save();
-                res.status(200).json({message: "Thêm todo thành công"});
+                await task.save();
+                res.status(200).json({message: "Thêm task thành công"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hơp lệ"});
             }
@@ -57,14 +59,14 @@ const TodoController = {
         }
     },
 
-    deleteTodo: async (req, res) => {
+    deleteTask: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const checkTodo = await TodoModel.findById(idTodo);
-            if(userID && checkTodo){
-                await TodoModel.findByIdAndDelete(idTodo);
-                res.status(200).json({message: "Đã xoá todo"});
+            const idTask = req.params.idTask;
+            const checkTask = await TaskModel.findById(idTask);
+            if(userID && checkTask){
+                await TaskModel.findByIdAndDelete(idTask);
+                res.status(200).json({message: "Đã xoá task"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -73,17 +75,19 @@ const TodoController = {
         }
     },
 
-    editTodo: async (req, res) => {
+    editTask: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const checkTodo = await TodoModel.findById(idTodo);
-            if(userID && checkTodo){
-                checkTodo.title = req.body.title;
-                checkTodo.content = req.body.content;
-                checkTodo.state = req.body.state;
-                await checkTodo.save();
-                res.status(200).json({message: "Sửa todo thành công"});
+            const idTask = req.params.idTask;
+            const checkTask = await TaskModel.findById(idTask);
+            if(userID && checkTask){
+                checkTask.title = req.body.title;
+                checkTask.description = req.body.description;
+                checkTask.dayStart = req.body.dayStart;
+                checkTask.dayEnd = req.body.dayEnd;
+                checkTask.state = req.body.state;
+                await checkTask.save();
+                res.status(200).json({message: "Sửa task thành công"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -93,4 +97,4 @@ const TodoController = {
     }
 }
 
-module.exports = TodoController;
+module.exports = TaskController;
