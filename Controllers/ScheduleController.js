@@ -2,7 +2,7 @@ const ScheduleModel = require("../Models/Schedule");
 const ProjectModel = require("../Models/Project");
 const jwt = require("jsonwebtoken");
 
-const ScheduleModel = {
+const ScheduleController = {
     getAll: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
@@ -87,7 +87,7 @@ const ScheduleModel = {
                 checkSchedule.stateAlarm = req.body.stateAlarm;
                 checkSchedule.dayStart = req.body.dayStart;
                 checkSchedule.dayEnd = req.body.dayEnd;
-                checkTodo.state = req.body.state;
+                checkSchedule.state = req.body.state;
                 await checkSchedule.save();
                 res.status(200).json({message: "Sửa schedule thành công"});
             }else{
@@ -99,4 +99,4 @@ const ScheduleModel = {
     }
 }
 
-module.exports = ScheduleModel;
+module.exports = ScheduleController;
