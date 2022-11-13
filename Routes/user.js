@@ -6,6 +6,7 @@ const UserController = require("../Controllers/UserController");
 const ProjectController = require("../Controllers/ProjectController");
 const ManagerController = require("../Controllers/ManagerController");
 const NoteController = require("../Controllers/NoteController");
+const TodoController = require("../Controllers/TodoController");
 
 //Infomation
 route.get("/info/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.getInfo);
@@ -45,5 +46,12 @@ route.post("/project/:idProject/note/add", authMiddleware.verifyAccessToken, Not
 route.delete("/project/note/delete/:idNote", authMiddleware.verifyAccessToken, NoteController.deleteNote);
 route.post("/project/note/edit/:idNote", authMiddleware.verifyAccessToken, NoteController.editNote);
 route.get("/project/note/detail/:idNote", authMiddleware.verifyAccessToken, NoteController.getDetail);
+
+//todo
+route.get("/project/:idProject/todo/getall", authMiddleware.verifyAccessToken, TodoController.getAll);
+route.post("/project/:idProject/todo/add", authMiddleware.verifyAccessToken, TodoController.addTodo);
+route.delete("/project/Todo/delete/:idTodo", authMiddleware.verifyAccessToken, TodoController.deleteTodo);
+route.post("/project/Todo/edit/:idTodo", authMiddleware.verifyAccessToken, TodoController.editTodo);
+route.get("/project/Todo/detail/:idTodo", authMiddleware.verifyAccessToken, TodoController.getDetail);
 
 module.exports = route;
