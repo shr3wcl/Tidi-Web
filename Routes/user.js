@@ -7,6 +7,8 @@ const ProjectController = require("../Controllers/ProjectController");
 const ManagerController = require("../Controllers/ManagerController");
 const NoteController = require("../Controllers/NoteController");
 const TodoController = require("../Controllers/TodoController");
+const TaskController = require("../Controllers/TaskController");
+const ScheduleController = require("../Controllers/ScheduleController");
 
 //Infomation
 route.get("/info/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.getInfo);
@@ -53,5 +55,19 @@ route.post("/project/:idProject/todo/add", authMiddleware.verifyAccessToken, Tod
 route.delete("/project/Todo/delete/:idTodo", authMiddleware.verifyAccessToken, TodoController.deleteTodo);
 route.post("/project/Todo/edit/:idTodo", authMiddleware.verifyAccessToken, TodoController.editTodo);
 route.get("/project/Todo/detail/:idTodo", authMiddleware.verifyAccessToken, TodoController.getDetail);
+
+//Task
+route.get("/project/:idProject/task/getall", authMiddleware.verifyAccessToken, TaskController.getAll);
+route.post("/project/:idProject/task/add", authMiddleware.verifyAccessToken, TaskController.addTask);
+route.delete("/project/task/delete/:idTask", authMiddleware.verifyAccessToken, TaskController.deleteTask);
+route.post("/project/task/edit/:idTask", authMiddleware.verifyAccessToken, TaskController.editTask);
+route.get("/project/task/detail/:idTask", authMiddleware.verifyAccessToken, TaskController.getDetail);
+
+//Schedule
+route.get("/project/:idProject/schedule/getall", authMiddleware.verifyAccessToken, ScheduleController.getAll);
+route.post("/project/:idProject/schedule/add", authMiddleware.verifyAccessToken, ScheduleController.addSchedule);
+route.delete("/project/schedule/delete/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.deleteSchedule);
+route.post("/project/schedule/edit/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.editSchedule);
+route.get("/project/schedule/detail/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.getDetail);
 
 module.exports = route;

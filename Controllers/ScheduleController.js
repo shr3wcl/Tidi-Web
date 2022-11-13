@@ -1,8 +1,8 @@
-const TodoModel = require("../Models/Todo");
+const ScheduleModel = require("../Models/Schedule");
 const ProjectModel = require("../Models/Project");
 const jwt = require("jsonwebtoken");
 
-const TodoController = {
+const ScheduleModel = {
     getAll: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
@@ -10,8 +10,8 @@ const TodoController = {
             const checkProject = await ProjectModel.findById(idProject);
 
             if(idProject && userID && checkProject){
-                const todo = await TodoModel.find({idProject: idProject});
-                res.status(200).json(todo);
+                const schedule = await ScheduleModel.find({idProject: idProject});
+                res.status(200).json(schedule);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -23,10 +23,10 @@ const TodoController = {
     getDetail: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const todo = await TodoModel.findById(idTodo);
-            if(note){
-                res.status(200).json(todo);
+            const idSchedule = req.params.idSchedule;
+            const schedule = await ScheduleModel.findById(idSchedule);
+            if(schedule){
+                res.status(200).json(schedule);
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -35,20 +35,23 @@ const TodoController = {
         }
     },
 
-    addTodo: async (req, res) => {
+    addSchedule: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
             if(idProject && userID && checkProject) {
-                const todo = await TodoModel({
+                const schedule = await ScheduleModel({
                     idProject: idProject,
                     title: req.body.title,
-                    content: req.body.content,
+                    description: req.body.description,
                     state: req.body.state,
+                    stateAlarm: req.body.stateAlarm,
+                    dayStart: req.body.dayStart,
+                    dayEnd: req.body.dayEnd
                 });
-                await todo.save();
-                res.status(200).json({message: "Thêm todo thành công"});
+                await schedule.save();
+                res.status(200).json({message: "Thêm schedule thành công"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hơp lệ"});
             }
@@ -57,14 +60,14 @@ const TodoController = {
         }
     },
 
-    deleteTodo: async (req, res) => {
+    deleteSchedule: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const checkTodo = await TodoModel.findById(idTodo);
-            if(userID && checkTodo){
-                await TodoModel.findByIdAndDelete(idTodo);
-                res.status(200).json({message: "Đã xoá todo"});
+            const idSchedule = req.params.idSchedule;
+            const checkSchedule = await ScheduleModel.findById(idSchedule);
+            if(userID && checkSchedule){
+                await ScheduleModel.findByIdAndDelete(idSchedule);
+                res.status(200).json({message: "Đã xoá schedule"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -73,17 +76,20 @@ const TodoController = {
         }
     },
 
-    editTodo: async (req, res) => {
+    editSchedule: async (req, res) => {
         try{
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
-            const idTodo = req.params.idTodo;
-            const checkTodo = await TodoModel.findById(idTodo);
-            if(userID && checkTodo){
-                checkTodo.title = req.body.title;
-                checkTodo.content = req.body.content;
+            const idSchedule = req.params.idSchedule;
+            const checkSchedule = await ScheduleModel.findById(idSchedule);
+            if(userID && checkSchedule){
+                checkSchedule.title = req.body.title;
+                checkSchedule.description = req.body.description;
+                checkSchedule.stateAlarm = req.body.stateAlarm;
+                checkSchedule.dayStart = req.body.dayStart;
+                checkSchedule.dayEnd = req.body.dayEnd;
                 checkTodo.state = req.body.state;
-                await checkTodo.save();
-                res.status(200).json({message: "Sửa todo thành công"});
+                await checkSchedule.save();
+                res.status(200).json({message: "Sửa schedule thành công"});
             }else{
                 res.status(403).json({message: "Yêu cầu không hợp lệ"});
             }
@@ -93,4 +99,4 @@ const TodoController = {
     }
 }
 
-module.exports = TodoController;
+module.exports = ScheduleModel;
