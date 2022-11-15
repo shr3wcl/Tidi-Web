@@ -42,13 +42,18 @@ const AuthController = {
                 }else{
                     const accessToken = tokenOBJ.generateAccessToken(user);
                     const refreshToken = tokenOBJ.generateRefreshToken(user);
+                    res.cookie("accessToken", accessToken, {
+                        httpOnly: true,
+                        secure: false,
+                        path: '/',
+                        sameSite: "strict",
+                    });
                     res.cookie("refreshToken", refreshToken, {
                         httpOnly: true,
                         secure: false,
                         path: '/',
                         sameSite: "strict",
                     });
-                    res.setHeader("token", "bearer " + accessToken);
                     const {password, ...others} = user._doc;
                     // req.session.user = user;
                     // req.session.token = {
@@ -67,8 +72,9 @@ const AuthController = {
     logout: async (req, res) => {
         try{
             res.removeHeader("token");
+            res.clearCookie("accessToken");
+            res.clearCookie("refreshToken");
             res.status(200).json({message: "Đăng xuất thành công"});
-            req.session.destroy();
         }catch(err){
             res.status(500).json(err);
         }
@@ -76,9 +82,9 @@ const AuthController = {
 
     requestRefreshToken: async (req, res) => {
         try{
-
-            const refreshToken = await req.headers.cookie.split(";")[1].trim().split("=")[1];
-
+            // console.log(res.getCookie("refreshToken"));
+            const refreshToken = await req.headers.cookie.split(";")[2].trim().split("=")[1];
+            console.log(req.headers.cookie);
             if (!refreshToken) {
                 res.status(401).json("You're not authenticated")
             } else {
