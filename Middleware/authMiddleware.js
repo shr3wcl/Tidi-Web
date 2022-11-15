@@ -39,11 +39,13 @@ const authMiddleware = {
 
     verifyOwnerOrAdmin: async (req, res, next) => {
         try{
-            const admin = jwt.decode(req.headers.token.split(" ")[1])?.admin ?? false;
-            let accessToken = req.headers.token;
+            // const admin = jwt.decode(req.headers.token.split(" ")[1])?.admin ?? false;
+            const accessToken = req.headers.cookie.split(";")[0].trim().split("=")[1];
+            const admin = jwt.decode(accessToken).admin ?? false;
             let checkOwner = 1;
             if (accessToken) {
-                accessToken = accessToken.split(" ")[1] ?? false;
+                // accessToken = accessToken.split(" ")[1] ?? false;
+                console.log(accessToken);
                 jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
                     if (err) {
                         if(admin){
