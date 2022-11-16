@@ -8,8 +8,12 @@ const AuthController = {
     register: async (req, res) => {
         try {
             const checkUsername = await UserModel.findOne({username: req.body.username});
+            const checkEmail = await UserModel.findOne({email: req.body.email});
             if(checkUsername){
-                res.status(404).json({message: "Tên người dùng đã tồn tại"});
+                res.status(403).json({message: "Tên người dùng đã tồn tại"});
+            }
+            if(checkEmail){
+                res.status(403).json({message: "Email đã được sử dụng"});
             }
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -84,7 +88,6 @@ const AuthController = {
         try{
             // console.log(res.getCookie("refreshToken"));
             const refreshToken = await req.headers.cookie.split(";")[2].trim().split("=")[1];
-            console.log(req.headers.cookie);
             if (!refreshToken) {
                 res.status(401).json("You're not authenticated")
             } else {
@@ -96,7 +99,13 @@ const AuthController = {
                         const newAccessToken = tokenOBJ.generateAccessToken(user);
                         const newRefreshToken = tokenOBJ.generateRefreshToken(user);
 
-                        res.setHeader("token", "bearer " + newAccessToken);
+                        // res.setHeader("token", "bearer " + newAccessToken);
+                        res.cookie("accessToken", newAccessToken, {
+                            httpOnly: true,
+                            secure: false,
+                            path: '/',
+                            sameSite: "strict",
+                        });
                         res.cookie("refreshToken", newRefreshToken, {
                             httpOnly: true,
                             secure: false,
