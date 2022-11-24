@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const BlogSchema = mongoose.Schema({
-    idOwner: {
+    idUser: {
         type: mongoose.Schema.Types.ObjectID,
         ref: 'User',
         required: true
@@ -11,14 +11,17 @@ const BlogSchema = mongoose.Schema({
         type: String,
         required: true,
         minLength: 1,
-        maxLength: 40
     },
 
     content: {
-        type: String,
-        required: true,
+        type: mongoose.Schema.Types.Mixed
     },
 
-}, {timestamps: true});
+    status: {
+        type: Boolean,
+        default: true
+    }
+
+}, { timestamps: true });
 
 module.exports = mongoose.model("Blog", BlogSchema);

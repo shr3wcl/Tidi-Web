@@ -19,9 +19,9 @@ const ProjectController = {
                     role: 0
                 })
                 await manager.save();
-                res.status(200).json({message: "Tạo project thành công"});
+                res.status(200).json({ message: "Tạo project thành công" });
             } else {
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
             }
         } catch (err) {
             res.status(500).json(err);
@@ -34,17 +34,17 @@ const ProjectController = {
             const idProject = req.params.idProject;
             const manager = await ManagerModel.findOne({
                 $and: [
-                    {idUser: userID},
-                    {idProject: idProject}
+                    { idUser: userID },
+                    { idProject: idProject }
                 ]
             });
             console.log(manager);
             if (manager?.role === 0) {
                 await ManagerModel.findByIdAndDelete(manager._id);
                 await ProjectModel.findByIdAndDelete(idProject);
-                res.status(200).json({message: "Xoá project thành công"});
+                res.status(200).json({ message: "Xoá project thành công" });
             } else {
-                res.status(403).json({message: "Bạn không có quyền xoá"});
+                res.status(403).json({ message: "Bạn không có quyền xoá" });
             }
         } catch (err) {
             console.log(err);
@@ -56,15 +56,15 @@ const ProjectController = {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id ?? false;
             const idProject = req.params.idProject;
-            const project = await ProjectModel.findOne({id: idProject});
+            const project = await ProjectModel.findOne({ id: idProject });
             const idManager = await ManagerModel.find();
             if (idManager?.role === 0 && project) {
                 project.title = req.body.title;
                 project.description = req.body.description;
                 await project.save();
-                res.status(200).json({message: "Thay đổi thông tin Project thành công"});
+                res.status(200).json({ message: "Thay đổi thông tin Project thành công" });
             } else {
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
             }
         } catch (err) {
             res.status(500).json("Lỗi");
@@ -75,13 +75,13 @@ const ProjectController = {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id ?? false;
             if (userID) {
-                const projects = await ManagerModel.find({idUser: userID}).populate('idProject');
+                const projects = await ManagerModel.find({ idUser: userID }).populate('idProject');
                 res.status(200).json(projects);
             } else {
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
             }
         } catch
-            (err) {
+        (err) {
             console.log(err);
             res.status(500).json(err);
         }

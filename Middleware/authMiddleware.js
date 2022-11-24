@@ -8,17 +8,18 @@ const authMiddleware = {
                 accessToken = accessToken.split(" ")[1];
                 jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
                     if (err) {
-                        res.status(404).json({message: "Token không hợp lý"});
+                        res.status(404).json({ message: "Token không hợp lý" });
                     } else {
                         req.user = user;
                         next();
                     }
                 });
             } else {
-                res.status(403).json({message: "Bạn không có quyền truy cập"});
+                res.status(403).json({ message: "Bạn không có quyền truy cập" });
             }
         } catch (err) {
-            res.status(500).json({message: "Yêu cầu không hợp lệ"});
+            console.log(err);
+            res.status(500).json({ message: "Yêu cầu không hợp lệ" });
         }
     },
 
@@ -29,40 +30,41 @@ const authMiddleware = {
             if (admin === true) {
                 next();
             } else {
-                res.status(403).json({message: "Bạn không có quyền hạn này"});
+                res.status(403).json({ message: "Bạn không có quyền hạn này" });
             }
         } catch (err) {
             console.log(err);
-            res.status(500).json({message: "Yêu cầu không hợp lệ"});
+            res.status(500).json({ message: "Yêu cầu không hợp lệ" });
         }
     },
 
     verifyOwnerOrAdmin: async (req, res, next) => {
-        try{
+        try {
             const accessToken = req.headers.token.split(" ")[1];
             const admin = jwt.decode(accessToken).admin ?? false;
             let checkOwner = 1;
             if (accessToken) {
                 jwt.verify(accessToken, process.env.KEY_ACCESS_TOKEN_JWT, (err, user) => {
                     if (err) {
-                        if(admin){
+                        if (admin) {
                             next();
-                        }else {
-                            res.status(404).json({message: "Token không hợp lý"});
+                        } else {
+                            res.status(404).json({ message: "Token không hợp lý" });
                         }
                     } else {
                         next();
                     }
                 });
-            }else{
-                if(admin){
+            } else {
+                if (admin) {
                     next();
-                }else{
-                    res.status(403).json({message: "Bạn không có quyền truy cập"});
+                } else {
+                    res.status(403).json({ message: "Bạn không có quyền truy cập" });
                 }
             }
-        }catch(err){
-            res.status(500).json({message: "Yêu cầu không hợp lệ"});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: "Yêu cầu không hợp lệ" });
         }
     }
 }
