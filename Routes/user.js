@@ -9,26 +9,31 @@ const NoteController = require("../Controllers/NoteController");
 const TodoController = require("../Controllers/TodoController");
 const TaskController = require("../Controllers/TaskController");
 const ScheduleController = require("../Controllers/ScheduleController");
+const StorageController = require('../Controllers/StorageController');
 
 //Infomation
 route.get("/info/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.getInfo);
 route.post("/edit/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.editInfo);
 
 //Blog
-route.get("/blogs/all", authMiddleware.verifyOwnerOrAdmin, BlogController.getAllBlogs);
-route.get("/blogs/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog)
+route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
+route.get("/blogs/public/all", BlogController.getAllBlogPublic);
+route.get("/blogs/:idBlog", BlogController.getDetailBlog)
 route.post("/blogs/store", authMiddleware.verifyOwnerOrAdmin, BlogController.addBlog);
-route.post("/blogs/edit/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.editBlog);
+route.post("/blogs/edit/:idBlog", authMiddleware.verifyAccessToken, BlogController.editBlog);
 // route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
 route.post("/blogs/like/:idBlog", BlogController.increaseFavorites);
-route.delete("/blogs/delete/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.deleteBlog);
+route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);
 route.post("/blogs/search", BlogController.searchBlog);
 //Command
 route.get("/blogs/command/:idBlog", authMiddleware.verifyOwnerOrAdmin, CommandController.getCommand);
 route.post("/command/add/:idBlog", authMiddleware.verifyOwnerOrAdmin, CommandController.addCommand);
 route.delete("/command/:idCommand", authMiddleware.verifyOwnerOrAdmin, CommandController.deleteCommand);
 route.post("/command/edit/:idCommand", authMiddleware.verifyOwnerOrAdmin, CommandController.editCommand);
-
+//Storage
+route.get("/blogs/storage/all", authMiddleware.verifyAccessToken, StorageController.getAll);
+route.post("/blogs/storage/add", authMiddleware.verifyAccessToken, StorageController.add);
+route.delete("/blogs/storage/delete/:idBlog", authMiddleware.verifyAccessToken, StorageController.delete);
 
 //Project
 route.post("/project/add", authMiddleware.verifyAccessToken, ProjectController.addProject);
