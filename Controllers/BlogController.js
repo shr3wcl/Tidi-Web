@@ -41,7 +41,7 @@ const BlogController = {
             const idBlog = req.params.idBlog;
             if (idBlog) {
                 const blog = await BlogModel.findOne({ _id: idBlog }).populate('idUser', 'firstName lastName avatar');
-                const blogFavourite = await FavouriteModel.findOne({ idBlog: blog._id }) ?? 0;
+                const blogFavourite = await FavouriteModel.findOne({ idBlog: blog?._id }) ?? 0;
                 const data = { ...blog._doc, favourites: blogFavourite.quantity };
                 if (blog) {
                     res.status(200).json({ message: "Lấy data thành công", blog: data });

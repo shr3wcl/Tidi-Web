@@ -8,7 +8,7 @@ const TokenController = {
                 admin: user.admin,
             },
             process.env.KEY_ACCESS_TOKEN_JWT,
-            { expiresIn: "1s" }
+            { expiresIn: "10s" }
         );
     },
 
