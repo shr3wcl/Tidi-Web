@@ -8,6 +8,11 @@ const ProjectSchema = mongoose.Schema({
 
     description: {
         type: String,
+    },
+
+    status: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

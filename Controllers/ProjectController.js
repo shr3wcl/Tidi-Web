@@ -85,6 +85,21 @@ const ProjectController = {
             console.log(err);
             res.status(500).json(err);
         }
+    },
+
+    getDetailProject: async (req, res) => {
+        try {
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id ?? false;
+            if (userID) {
+                const data = await ManagerModel.find({ idUser: userID, idProject: req.params.idProject }).populate("idProject");
+                return res.status(200).json(data);
+            }
+            else {
+                return res.status(400).json("Bad request");
+            }
+        } catch (error) {
+            return res.status(500).json("Error");
+        }
     }
 }
 

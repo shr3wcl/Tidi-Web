@@ -12,8 +12,10 @@ const ScheduleController = require("../Controllers/ScheduleController");
 const StorageController = require('../Controllers/StorageController');
 
 //Infomation
-route.get("/info/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.getInfo);
+route.get("/info/:idUser", UserController.getInfo);
 route.post("/edit/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.editInfo);
+route.post("/change/password", authMiddleware.verifyAccessToken, UserController.changePassword);
+// route.get("/info")
 
 //Blog
 route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
@@ -40,6 +42,7 @@ route.post("/project/add", authMiddleware.verifyAccessToken, ProjectController.a
 route.delete("/project/delete/:idProject", authMiddleware.verifyAccessToken, ProjectController.deleteProject);
 route.post("/project/edit/:idProject", authMiddleware.verifyAccessToken, ProjectController.editProject);
 route.get("/project/all", authMiddleware.verifyAccessToken, ProjectController.getAllProject);
+route.get("/project/detail/:idProject", authMiddleware.verifyAccessToken, ProjectController.getDetailProject);
 
 //Manager
 route.post("/manager/add/:idProject", authMiddleware.verifyOwnerOrAdmin, ManagerController.addMember);

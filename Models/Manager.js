@@ -17,6 +17,6 @@ const ManagerSchema = mongoose.Schema({
         type: Number,
         required: true,
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Manager", ManagerSchema);
