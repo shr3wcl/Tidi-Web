@@ -13,6 +13,10 @@ const BlogSchema = mongoose.Schema({
         minLength: 1,
     },
 
+    description: {
+        type: String,
+    },
+
     content: {
         type: mongoose.Schema.Types.Mixed
     },
