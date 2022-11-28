@@ -38,11 +38,11 @@ const AuthController = {
         try {
             const user = await UserModel.findOne({ username: req.body.username });
             if (!user) {
-                res.status(404).json({ message: "Không tìm thấy tên người dùng" });
+                res.status(404).json("Không tìm thấy tên người dùng");
             } else {
                 const checkPassword = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPassword) {
-                    res.status(404).json({ message: "Sai mật khẩu" });
+                    res.status(404).json("Sai mật khẩu");
                 } else {
                     const accessToken = tokenOBJ.generateAccessToken(user);
                     const refreshToken = tokenOBJ.generateRefreshToken(user);

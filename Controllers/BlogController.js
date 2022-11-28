@@ -72,9 +72,9 @@ const BlogController = {
                 //     quantity: 0,
                 // });
                 // await blogFavourites.save();
-                res.status(200).json({ message: "Đã thêm blog thành công", blog: blog });
+                res.status(200).json(blog);
             } else {
-                res.status(404).json({ message: "Thêm blog không thành công" });
+                res.status(404).json("Thêm blog không thành công");
             }
         } catch (err) {
             console.log(err);

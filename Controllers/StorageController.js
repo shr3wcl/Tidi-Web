@@ -25,14 +25,14 @@ const StorageController = {
             if (idUser) {
                 const checkEmpty = await StorageModel.findOne({ idBlog: req.body.idBlog, idUser: idUser });
                 if (checkEmpty) {
-                    return res.status(200).json("Bài viết đã được lưu");
+                    return res.status(200).json("Previously saved");
                 }
                 const data = await StorageModel({
                     idUser: idUser,
                     idBlog: req.body.idBlog
                 });
                 await data.save();
-                return res.status(200).json("Successful");
+                return res.status(200).json("Saved");
             }
             res.status(403).json("Not Found");
         } catch (error) {
