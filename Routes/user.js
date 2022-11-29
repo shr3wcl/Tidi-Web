@@ -36,6 +36,7 @@ route.post("/command/edit/:idCommand", authMiddleware.verifyOwnerOrAdmin, Comman
 route.get("/blogs/storage/all", authMiddleware.verifyAccessToken, StorageController.getAll);
 route.post("/blogs/storage/add", authMiddleware.verifyAccessToken, StorageController.add);
 route.delete("/blogs/storage/delete/:idBlog", authMiddleware.verifyAccessToken, StorageController.delete);
+route.get("/blogs/storage/check/:idBlog", authMiddleware.verifyAccessToken, StorageController.checkEmpty);
 
 //Project
 route.post("/project/add", authMiddleware.verifyAccessToken, ProjectController.addProject);
