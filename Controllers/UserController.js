@@ -4,6 +4,8 @@ const BlogModel = require("../Models/Blog");
 const ProjectModel = require("../Models/Project");
 const ManagerModel = require("../Models/Manager");
 const bcrypt = require("bcrypt");
+const { use } = require("../Routes/user");
+
 
 
 const UserController = {
@@ -87,6 +89,23 @@ const UserController = {
         catch (err) {
             console.log(err);
             res.status(200).json("Error");
+        }
+    },
+
+    changeAvatar: async (req, res) => {
+        try {
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+            if (userID) {
+                const user = await UserModel.findById(userID);
+                user.avatar = req.body.avatar;
+                const newUser = await user.save();
+                const { password, ...others } = newUser._doc;
+                return res.status(200).json(others);
+            }
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).json("Error");
         }
     }
 }
