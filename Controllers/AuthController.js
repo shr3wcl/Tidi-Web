@@ -53,7 +53,7 @@ const AuthController = {
                         sameSite: "strict",
                     });
                     const { password, ...others } = user._doc;
-                    res.status(200).json({ message: "Đăng nhập thành công", user: { ...others }, token: { accessToken: accessToken, refreshToken: refreshToken } });
+                    res.status(200).json({ user: { ...others }, token: { accessToken: accessToken, refreshToken: refreshToken } });
                 }
             }
 
