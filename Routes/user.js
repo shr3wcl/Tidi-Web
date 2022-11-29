@@ -11,10 +11,27 @@ const TaskController = require("../Controllers/TaskController");
 const ScheduleController = require("../Controllers/ScheduleController");
 const StorageController = require('../Controllers/StorageController');
 
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/images");
+    },
+    filename: (req, file, cb) => {
+        console.log(file);
+        console.log(1);
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+})
+
+const upload = multer({ storage });
+
 //Infomation
 route.get("/info/:idUser", UserController.getInfo);
 route.post("/edit/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.editInfo);
 route.post("/change/password", authMiddleware.verifyAccessToken, UserController.changePassword);
+route.post("/change/avatar", UserController.changeAvatar);
 // route.get("/info")
 
 //Blog
