@@ -53,6 +53,19 @@ const StorageController = {
             console.log(error);
             return res.status(500).json("Error");
         }
+    },
+
+    checkEmpty: async (req, res) => {
+        try {
+            const idUser = jwt.decode(req.headers.token.split(" ")[1]).id;
+            if (idUser) {
+                const data = StorageModel.find({ idUser: idUser, idBlog: req.params.idBlog });
+                return res.status(200).json(data);
+            }
+            return res.status(403).json("Not found");
+        } catch (error) {
+            res.status(500).json("Error");
+        }
     }
 }
 
