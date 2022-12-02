@@ -31,17 +31,27 @@ const UserSchema = mongoose.Schema({
         unique: true,
     },
     gender: {
-        type: Boolean,
+        type: String,
         required: true
     },
     birthday: {
-        type: Date,
+        type: String,
         required: false,
+    },
+    location: {
+        type: String,
+    },
+    bio: {
+        type: String,
     }
     ,
     password: {
         type: String,
         required: true,
+    },
+
+    externalLink: {
+        type: mongoose.Schema.Types.Mixed,
     },
 
     admin: {
