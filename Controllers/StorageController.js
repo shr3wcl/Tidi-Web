@@ -31,8 +31,8 @@ const StorageController = {
                     idUser: idUser,
                     idBlog: req.body.idBlog
                 });
-                await data.save();
-                return res.status(200).json("Saved");
+                const newData = await data.save();
+                return res.status(200).json({ storage: newData });
             }
             res.status(403).json("Not Found");
         } catch (error) {
@@ -59,11 +59,12 @@ const StorageController = {
         try {
             const idUser = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (idUser) {
-                const data = StorageModel.find({ idUser: idUser, idBlog: req.params.idBlog });
+                const data = await StorageModel.findOne({ idUser: idUser, idBlog: req.params.idBlog });
                 return res.status(200).json(data);
             }
             return res.status(403).json("Not found");
         } catch (error) {
+            console.log(error);
             res.status(500).json("Error");
         }
     }
