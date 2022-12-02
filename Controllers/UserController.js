@@ -30,14 +30,19 @@ const UserController = {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
-                const user = await UserModel.findOne({ id: userID });
+                const user = await UserModel.findById(userID);
+                console.log(user);
                 if (user) {
                     user.firstName = req.body.firstName;
                     user.lastName = req.body.lastName;
                     user.email = req.body.email;
                     user.gender = req.body.gender;
-                    await user.save();
-                    res.status(200).json({ message: "Cập nhập thông tin thành công" });
+                    user.birthday = req.body.birthday;
+                    user.location = req.body.location;
+                    user.bio = req.body.bio;
+                    const userSaved = await user.save();
+                    const { password, ...others } = userSaved._doc;
+                    res.status(200).json(others);
                 }
                 else {
                     res.status(200).json({ message: "Không thể cập nhập" });
@@ -46,6 +51,7 @@ const UserController = {
                 res.status(403).json({ message: "Yêu cầu không hợp lệ" });
             }
         } catch (err) {
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
