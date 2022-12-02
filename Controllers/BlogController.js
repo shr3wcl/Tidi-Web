@@ -44,7 +44,7 @@ const BlogController = {
                 const blogFavourite = await FavouriteModel.findOne({ idBlog: blog?._id }) ?? 0;
                 const data = { ...blog._doc, favourites: blogFavourite.quantity };
                 if (blog) {
-                    res.status(200).json({ message: "Lấy data thành công", blog: data });
+                    res.status(200).json({ blog: data });
                 } else {
                     res.status(404).json({ message: "Yêu cầu không hợp lệ" });
                 }
