@@ -29,7 +29,7 @@ const upload = multer({ storage });
 
 //Infomation
 route.get("/info/:idUser", UserController.getInfo);
-route.post("/edit/:idUser", authMiddleware.verifyOwnerOrAdmin, UserController.editInfo);
+route.post("/edit/:idUser", authMiddleware.verifyAccessToken, UserController.editInfo);
 route.post("/change/password", authMiddleware.verifyAccessToken, UserController.changePassword);
 route.post("/change/avatar", UserController.changeAvatar);
 // route.get("/info")
