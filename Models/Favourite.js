@@ -2,20 +2,16 @@ const mongoose = require('mongoose');
 
 const FavouriteSchema = mongoose.Schema({
     idBlog: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'Blog',
+        required: true,
     },
 
     idUser: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
         required: true,
     },
-
-    quantity: {
-        type: Number,
-        required: true,
-        default: 0
-    }
 
 }, { timestamps: true });
 
