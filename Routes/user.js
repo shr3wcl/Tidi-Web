@@ -13,6 +13,7 @@ const StorageController = require('../Controllers/StorageController');
 
 const multer = require("multer");
 const path = require("path");
+const FollowController = require('../Controllers/FollowController');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -34,6 +35,11 @@ route.post("/change/password", authMiddleware.verifyAccessToken, UserController.
 route.post("/change/avatar", UserController.changeAvatar);
 // route.get("/info")
 
+//Follow
+route.get("/follow/all/:idUser", FollowController.getAllFollow);
+route.post("/follow/add/:idUser", authMiddleware.verifyAccessToken, FollowController.addFollower);
+route.post("/follow/delete", authMiddleware.verifyAccessToken, FollowController.deleteFollower);
+route.post("/follow/check", authMiddleware.verifyAccessToken, FollowController.checkFollow);
 //Blog
 route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
 route.get("/blogs/public/all", BlogController.getAllBlogPublic);
@@ -44,11 +50,11 @@ route.post("/blogs/edit/:idBlog", authMiddleware.verifyAccessToken, BlogControll
 route.post("/blogs/like/:idBlog", BlogController.increaseFavorites);
 route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);
 route.post("/blogs/search", BlogController.searchBlog);
-//Command
-route.get("/blogs/command/:idBlog", authMiddleware.verifyOwnerOrAdmin, CommandController.getCommand);
-route.post("/command/add/:idBlog", authMiddleware.verifyOwnerOrAdmin, CommandController.addCommand);
-route.delete("/command/:idCommand", authMiddleware.verifyOwnerOrAdmin, CommandController.deleteCommand);
-route.post("/command/edit/:idCommand", authMiddleware.verifyOwnerOrAdmin, CommandController.editCommand);
+//Comment
+route.get("/blogs/comment/:idBlog", authMiddleware.verifyAccessToken, CommandController.getCommand);
+route.post("/comment/add/:idBlog", authMiddleware.verifyAccessToken, CommandController.addCommand);
+route.delete("/comment/:idCommand", authMiddleware.verifyAccessToken, CommandController.deleteCommand);
+route.post("/comment/edit/:idCommand", authMiddleware.verifyAccessToken, CommandController.editCommand);
 //Storage
 route.get("/blogs/storage/all", authMiddleware.verifyAccessToken, StorageController.getAll);
 route.post("/blogs/storage/add", authMiddleware.verifyAccessToken, StorageController.add);
