@@ -7,7 +7,7 @@ const StorageController = {
             const idUser = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (idUser) {
                 const storage = await StorageModel.find({ idUser: idUser }).populate({
-                    path: "idBlog", select: "_id title", populate: {
+                    path: "idBlog", select: "_id title content", populate: {
                         path: "idUser", select: "_id firstName lastName avatar"
                     }
                 }).sort([['createdAt', -1]]);
