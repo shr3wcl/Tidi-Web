@@ -7,10 +7,11 @@ const FollowSchema = mongoose.Schema({
         required: true
     },
 
-    followers: {
-        type: mongoose.Schema.Types.Mixed,
-        default: []
+    idFollow: {
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+        required: true
     }
 }, { timestamps: true })
 
-module.exports = mongoose.Model("Follow", FollowSchema);
+module.exports = mongoose.model("Follow", FollowSchema);
