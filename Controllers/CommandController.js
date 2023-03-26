@@ -3,22 +3,22 @@ const jwt = require("jsonwebtoken");
 
 const CommandController = {
     addCommand: async (req, res) => {
-        try{
+        try {
             const idBlog = req.params.idBlog;
-            if(idBlog){
+            if (idBlog) {
                 const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
                 const newCommand = await CommandOBJ({
                     idBlog: idBlog,
-                    idUser: userID,
+                    idUser: req.body.idUser,
                     content: req.body.content
                 })
                 newCommand.save();
-                res.status(200).json({message: "Thêm bình luận thành công"});
+                res.status(200).json({ message: "Add comment success" });
             }
-            else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             console.log(err);
             res.status(500).json("Lỗi");
         }
@@ -27,12 +27,31 @@ const CommandController = {
     getCommand: async (req, res) => {
         try {
             const idBlog = req.params.idBlog;
-            if(idBlog){
-                const command = await CommandOBJ.find({idBlog: idBlog}).sort('-createdAt');
-                res.status(200).json({message: "Lấy bình luận thành công", command: command});
+            if (idBlog) {
+                const command = await CommandOBJ.find({ idBlog: idBlog }).select('_id content idUser createdAt').sort('-createdAt').populate('idUser', 'avatar firstName lastName _id');
+                res.status(200).json(command);
             }
             else {
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(403).json({ message: "Bad Request" });
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500).json("Error");
+        }
+    },
+
+    editCommand: async (req, res) => {
+        try {
+            const idCommand = req.params.idCommand;
+            if (idCommand) {
+                const command = await CommandOBJ.findOne({ _id: idCommand });
+                if (command) {
+                    command.content = req.body.content;
+                    await command.save();
+                    res.status(200).json({ message: "Edit Success" });
+                }
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
             console.log(err);
@@ -40,36 +59,17 @@ const CommandController = {
         }
     },
 
-    editCommand: async (req, res) => {
-        try{
-            const idCommand = req.params.idCommand;
-            if(idCommand){
-                const command = await CommandOBJ.findOne({_id: idCommand});
-                if(command){
-                    command.content = req.body.content;
-                    await command.save();
-                    res.status(200).json({message: "Sửa bình luận thành công"});
-                }
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
-            }
-        }catch(err){
-            console.log(err);
-            res.status(500).json("Lỗi");
-        }
-    },
-
     deleteCommand: async (req, res) => {
-        try{
+        try {
             const idCommand = req.params.idCommand;
-            if(idCommand){
-                await CommandOBJ.findByIdAndDelete({_id: idCommand});
-                res.status(200).json({message: "Xoá bình luận thành công"});
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            if (idCommand) {
+                await CommandOBJ.findByIdAndDelete({ _id: idCommand });
+                res.status(200).json({ message: "Delete Success" });
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
-            res.status(500).json("Lỗi");
+        } catch (err) {
+            res.status(500).json("Error");
         }
     }
 }

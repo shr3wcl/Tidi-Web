@@ -90,7 +90,9 @@ const UserController = {
                 path: 'idProject',
                 match: { status: true }
             });
-            res.status(200).json({ user, blog, projects });
+            // res.status(200).json({ user, blog, projects });
+            console.log("dqwdqwdqwdw");
+            res.status(200).json({ user });
         }
         catch (err) {
             console.log(err);

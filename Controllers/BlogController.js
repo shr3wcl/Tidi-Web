@@ -9,7 +9,7 @@ const BlogController = {
             const blogs = await BlogModel.find();
             res.status(200).json({ blogs: blogs });
         } catch (err) {
-            res.status(500).json({ message: "Lỗi" });
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -18,7 +18,7 @@ const BlogController = {
             const blogs = await BlogModel.find({ status: true }).sort([['updatedAt', -1]]).populate('idUser');
             res.status(200).json({ blogs });
         } catch (error) {
-            res.status(500).json({ message: "Lỗi" });
+            res.status(500).json("Error");
         }
     },
 
@@ -29,10 +29,10 @@ const BlogController = {
                 const blogs = await BlogModel.find({ idUser: userID }).sort([['createdAt', -1]]);
                 res.status(200).json({ blogs: blogs });
             } else {
-                res.status(404).json({ message: "Không tìm thấy người dùng" });
+                res.status(404).json("Not found user");
             }
         } catch (err) {
-            res.status(500).json("Lỗi");
+            res.status(500).json("Error");
         }
     },
 
@@ -46,12 +46,11 @@ const BlogController = {
                 if (blog) {
                     res.status(200).json({ blog: data });
                 } else {
-                    res.status(404).json({ message: "Yêu cầu không hợp lệ" });
+                    res.status(404).json("Bad Request");
                 }
             }
         } catch (err) {
-            console.log(err);
-            res.status(404).json({ message: "Lỗi" });
+            res.status(404).json("Error");
         }
     },
 
@@ -74,11 +73,10 @@ const BlogController = {
                 // await blogFavourites.save();
                 res.status(200).json(blog);
             } else {
-                res.status(404).json("Thêm blog không thành công");
+                res.status(404).json("Add Blog Fail");
             }
         } catch (err) {
-            console.log(err);
-            res.status(500).json("Lỗi");
+            res.status(500).json("Error");
         }
     },
 
@@ -91,9 +89,9 @@ const BlogController = {
                 blog.content = req.body.content;
                 blog.status = req.body.status;
                 await blog.save();
-                res.status(200).json({ message: "Sửa nội dung blog thành công" });
+                res.status(200).json({ message: "Edit Blog Success" });
             } else {
-                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
+                res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
             res.status(500).json("Lỗi");
@@ -105,12 +103,12 @@ const BlogController = {
             const idBlog = req.params?.idBlog;
             if (idBlog) {
                 await BlogModel.findByIdAndDelete(idBlog);
-                res.status(200).json({ message: "Đã xoá thành công" });
+                res.status(200).json({ message: "Delete Success" });
             } else {
-                res.status(403).json({ message: "Xoá không thành công" });
+                res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            res.status(500).json({ message: "Lỗi" });
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -121,7 +119,7 @@ const BlogController = {
             if (idBlog) {
                 const blog = await FavouriteModel.findOne({ idBlog: idBlog }, (err, favouriteBlog) => {
                     if (err) {
-                        res.status(403).json({ message: "Lỗi" });
+                        res.status(403).json({ message: "Error" });
                     } else {
                         console.log(favouriteBlog);
                     }
@@ -150,11 +148,9 @@ const BlogController = {
                     { content: { $regex: '.*' + key + '.*' } }
                 ]
             });
-            console.log(data);
-            res.status(200).json({ data: data });
+            res.status(200).json(data);
         } catch (err) {
-            console.log(err);
-            res.status(500).json("Lỗi");
+            res.status(500).json("Error");
         }
     }
 }

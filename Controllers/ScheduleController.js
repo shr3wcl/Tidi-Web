@@ -4,43 +4,43 @@ const jwt = require("jsonwebtoken");
 
 const ScheduleController = {
     getAll: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
 
-            if(idProject && userID && checkProject){
-                const schedule = await ScheduleModel.find({idProject: idProject});
+            if (idProject && userID && checkProject) {
+                const schedule = await ScheduleModel.find({ idProject: idProject });
                 res.status(200).json(schedule);
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     },
 
     getDetail: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idSchedule = req.params.idSchedule;
             const schedule = await ScheduleModel.findById(idSchedule);
-            if(schedule){
+            if (schedule) {
                 res.status(200).json(schedule);
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     },
 
     addSchedule: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idProject = req.params.idProject;
             const checkProject = await ProjectModel.findById(idProject);
-            if(idProject && userID && checkProject) {
+            if (idProject && userID && checkProject) {
                 const schedule = await ScheduleModel({
                     idProject: idProject,
                     title: req.body.title,
@@ -51,37 +51,37 @@ const ScheduleController = {
                     dayEnd: req.body.dayEnd
                 });
                 await schedule.save();
-                res.status(200).json({message: "Thêm schedule thành công"});
-            }else{
-                res.status(403).json({message: "Yêu cầu không hơp lệ"});
+                res.status(200).json({ message: "Add Schedule Success" });
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     },
 
     deleteSchedule: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idSchedule = req.params.idSchedule;
             const checkSchedule = await ScheduleModel.findById(idSchedule);
-            if(userID && checkSchedule){
+            if (userID && checkSchedule) {
                 await ScheduleModel.findByIdAndDelete(idSchedule);
-                res.status(200).json({message: "Đã xoá schedule"});
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(200).json({ message: "Delete Schedule Success" });
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     },
 
     editSchedule: async (req, res) => {
-        try{
+        try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idSchedule = req.params.idSchedule;
             const checkSchedule = await ScheduleModel.findById(idSchedule);
-            if(userID && checkSchedule){
+            if (userID && checkSchedule) {
                 checkSchedule.title = req.body.title;
                 checkSchedule.description = req.body.description;
                 checkSchedule.stateAlarm = req.body.stateAlarm;
@@ -89,11 +89,11 @@ const ScheduleController = {
                 checkSchedule.dayEnd = req.body.dayEnd;
                 checkSchedule.state = req.body.state;
                 await checkSchedule.save();
-                res.status(200).json({message: "Sửa schedule thành công"});
-            }else{
-                res.status(403).json({message: "Yêu cầu không hợp lệ"});
+                res.status(200).json({ message: "Edit Schedule Success" });
+            } else {
+                res.status(403).json({ message: "Bad Request" });
             }
-        }catch(err){
+        } catch (err) {
             res.status(500).json("Lỗi");
         }
     }

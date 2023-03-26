@@ -10,10 +10,10 @@ const AuthController = {
             const checkUsername = await UserModel.findOne({ username: req.body.username });
             const checkEmail = await UserModel.findOne({ email: req.body.email });
             if (checkUsername) {
-                res.status(403).json({ message: "Tên người dùng đã tồn tại" });
+                res.status(403).json({ message: "Username is Exist" });
             }
             if (checkEmail) {
-                res.status(403).json({ message: "Email đã được sử dụng" });
+                res.status(403).json({ message: "Email is Exist" });
             }
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -28,7 +28,7 @@ const AuthController = {
             });
 
             const user = await newUser.save();
-            res.status(200).json({ message: "Đăng ký thành công", user: user });
+            res.status(200).json({ message: "Success", user: user });
         } catch (err) {
             console.error(err);
         }
@@ -38,11 +38,11 @@ const AuthController = {
         try {
             const user = await UserModel.findOne({ username: req.body.username });
             if (!user) {
-                res.status(404).json("Không tìm thấy tên người dùng");
+                res.status(404).json("Not found");
             } else {
                 const checkPassword = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPassword) {
-                    res.status(404).json("Sai mật khẩu");
+                    res.status(404).json("Wrong password");
                 } else {
                     const accessToken = tokenOBJ.generateAccessToken(user);
                     const refreshToken = tokenOBJ.generateRefreshToken(user);
@@ -67,7 +67,7 @@ const AuthController = {
             res.removeHeader("token");
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
-            res.status(200).json({ message: "Đăng xuất thành công" });
+            res.status(200).json({ message: "Logout success" });
         } catch (err) {
             res.status(500).json(err);
         }
@@ -101,7 +101,7 @@ const AuthController = {
             }
         } catch (err) {
             console.log(err);
-            res.status(500).json("Lỗi");
+            res.status(500).json("Error");
         }
     },
 }

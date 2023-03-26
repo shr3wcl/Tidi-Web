@@ -23,6 +23,6 @@ const CommandSchema = mongoose.Schema({
         required: false,
         default: 0
     }
-},  { timestamps: true });
+}, { timestamps: true });
 
 module.exports = mongoose.model('Command', CommandSchema);

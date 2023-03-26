@@ -10,23 +10,26 @@ const TodoController = require("../Controllers/TodoController");
 const TaskController = require("../Controllers/TaskController");
 const ScheduleController = require("../Controllers/ScheduleController");
 const StorageController = require('../Controllers/StorageController');
-
+const FileController = require("../Controllers/FileController");
 const multer = require("multer");
 const path = require("path");
 const FollowController = require('../Controllers/FollowController');
+// const { uploadFile, getAllFile, getFile } = require('../Controllers/FileController');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "public/images");
+        cb(null, "public/file");
     },
     filename: (req, file, cb) => {
-        console.log(file);
-        console.log(1);
         cb(null, Date.now() + path.extname(file.originalname));
     }
 })
 
 const upload = multer({ storage });
+
+route.post("/uploads/file", upload.single("recfile"), FileController.uploadFile);
+route.post("/upload/file/all", authMiddleware.verifyAccessToken, FileController.getAllFile);
+route.post("/upload/file/get/:nameFile", authMiddleware.verifyAccessToken, FileController.getFile);
 
 //Infomation
 route.get("/info/:idUser", UserController.getInfo);
@@ -51,7 +54,7 @@ route.post("/blogs/like/:idBlog", BlogController.increaseFavorites);
 route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);
 route.post("/blogs/search", BlogController.searchBlog);
 //Comment
-route.get("/blogs/comment/:idBlog", authMiddleware.verifyAccessToken, CommandController.getCommand);
+route.get("/blogs/comment/:idBlog", CommandController.getCommand);
 route.post("/comment/add/:idBlog", authMiddleware.verifyAccessToken, CommandController.addCommand);
 route.delete("/comment/:idCommand", authMiddleware.verifyAccessToken, CommandController.deleteCommand);
 route.post("/comment/edit/:idCommand", authMiddleware.verifyAccessToken, CommandController.editCommand);
@@ -101,5 +104,6 @@ route.post("/project/:idProject/schedule/add", authMiddleware.verifyAccessToken,
 route.delete("/project/schedule/delete/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.deleteSchedule);
 route.post("/project/schedule/edit/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.editSchedule);
 route.get("/project/schedule/detail/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.getDetail);
+
 
 module.exports = route;
