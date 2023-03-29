@@ -42,17 +42,17 @@ const UserController = {
                     user.bio = req.body.bio;
                     const userSaved = await user.save();
                     const { password, ...others } = userSaved._doc;
-                    res.status(200).json(others);
+                    res.status(200).json({ user: others, message: "Changed Infomation" });
                 }
                 else {
-                    res.status(200).json({ message: "Không thể cập nhập" });
+                    res.status(401).json({ message: "Cannot update" });
                 }
             } else {
-                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
+                res.status(403).json({ message: "Bad request" });
             }
         } catch (err) {
             console.log(err);
-            res.status(500).json("Lỗi");
+            res.status(401).json("Error");
         }
     },
 
@@ -69,16 +69,16 @@ const UserController = {
                         const hashedPass = await bcrypt.hash(req.body.password, salt);
                         user.password = hashedPass;
                         await user.save();
-                        return res.status(200).json("Cập nhập thông tin thành công");
+                        return res.status(200).json({ message: "Updated" });
                     }
                     else {
-                        return res.status(400).json("Wrong password");
+                        return res.status(400).json({ message: "Wrong password" });
                     }
                 }
             }
-            return res.status(403).json("User is not empty")
+            return res.status(403).json({ message: "User is empty" })
         } catch (error) {
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -91,12 +91,11 @@ const UserController = {
                 match: { status: true }
             });
             // res.status(200).json({ user, blog, projects });
-            console.log("dqwdqwdqwdw");
             res.status(200).json({ user });
         }
         catch (err) {
             console.log(err);
-            res.status(200).json("Error");
+            res.status(200).json({ message: "Error" });
         }
     },
 
@@ -113,7 +112,7 @@ const UserController = {
 
         } catch (error) {
             console.log(error);
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     }
 }

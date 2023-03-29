@@ -27,10 +27,11 @@ const AuthController = {
                 password: hashedPass
             });
 
-            const user = await newUser.save();
-            res.status(200).json({ message: "Success", user: user });
+            await newUser.save();
+            res.status(200).json({ message: "Success"});
         } catch (err) {
             console.error(err);
+            res.status(403).json({ message: "Error" });
         }
     },
 
@@ -38,11 +39,11 @@ const AuthController = {
         try {
             const user = await UserModel.findOne({ username: req.body.username });
             if (!user) {
-                res.status(404).json("Not found");
+                res.status(401).json({ message: "Username or password is wrong"});
             } else {
                 const checkPassword = await bcrypt.compare(req.body.password, user.password);
                 if (!checkPassword) {
-                    res.status(404).json("Wrong password");
+                    res.status(401).json({ message: "Username or password is wrong"});
                 } else {
                     const accessToken = tokenOBJ.generateAccessToken(user);
                     const refreshToken = tokenOBJ.generateRefreshToken(user);
@@ -53,12 +54,13 @@ const AuthController = {
                         sameSite: "strict",
                     });
                     const { password, ...others } = user._doc;
-                    res.status(200).json({ user: { ...others }, token: { accessToken: accessToken, refreshToken: refreshToken } });
+                    res.status(200).json({message: "Login success", user: { ...others }, token: { accessToken: accessToken, refreshToken: refreshToken } });
                 }
             }
 
         } catch (err) {
             console.log(err);
+            res.status(403).json({ message: "Error" })
         }
     },
 
@@ -77,7 +79,7 @@ const AuthController = {
         try {
             const refreshToken = await req.headers.refreshtoken;
             if (!refreshToken) {
-                res.status(401).json("You're not authenticated")
+                res.status(401).json({ message: "You're not authenticated" })
             } else {
                 jwt.verify(refreshToken, process.env.KEY_REFRESH_TOKEN_JWT, async (err, user) => {
                     if (err) {
@@ -101,7 +103,7 @@ const AuthController = {
             }
         } catch (err) {
             console.log(err);
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 }

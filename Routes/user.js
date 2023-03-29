@@ -44,20 +44,24 @@ route.post("/follow/add/:idUser", authMiddleware.verifyAccessToken, FollowContro
 route.post("/follow/delete", authMiddleware.verifyAccessToken, FollowController.deleteFollower);
 route.post("/follow/check", authMiddleware.verifyAccessToken, FollowController.checkFollow);
 //Blog
+route.get("/blogs/basic/all", authMiddleware.verifyAccessToken, BlogController.getBasicBlogs)
 route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
 route.get("/blogs/public/all", BlogController.getAllBlogPublic);
+route.get("/blogs/public/basic/all", BlogController.getAllBlogBasicPublic);
 route.get("/blogs/:idBlog", BlogController.getDetailBlog)
 route.post("/blogs/store", authMiddleware.verifyOwnerOrAdmin, BlogController.addBlog);
 route.post("/blogs/edit/:idBlog", authMiddleware.verifyAccessToken, BlogController.editBlog);
 // route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
-route.post("/blogs/like/:idBlog", BlogController.increaseFavorites);
+route.post("/blogs/like/:idBlog", authMiddleware.verifyAccessToken,BlogController.increaseFavorites);
 route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);
 route.post("/blogs/search", BlogController.searchBlog);
+
 //Comment
 route.get("/blogs/comment/:idBlog", CommandController.getCommand);
 route.post("/comment/add/:idBlog", authMiddleware.verifyAccessToken, CommandController.addCommand);
 route.delete("/comment/:idCommand", authMiddleware.verifyAccessToken, CommandController.deleteCommand);
 route.post("/comment/edit/:idCommand", authMiddleware.verifyAccessToken, CommandController.editCommand);
+
 //Storage
 route.get("/blogs/storage/all", authMiddleware.verifyAccessToken, StorageController.getAll);
 route.post("/blogs/storage/add", authMiddleware.verifyAccessToken, StorageController.add);

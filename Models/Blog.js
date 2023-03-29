@@ -24,6 +24,10 @@ const BlogSchema = mongoose.Schema({
     status: {
         type: Boolean,
         default: true
+    },
+
+    tags: {
+        type: [String]
     }
 
 }, { timestamps: true });

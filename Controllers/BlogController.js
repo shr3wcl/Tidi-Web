@@ -21,18 +21,44 @@ const BlogController = {
             res.status(500).json("Error");
         }
     },
+    
+    getAllBlogBasicPublic: async (req, res) => {
+        try {
+            // const blogs = await BlogModel.find({ status: true }).select("_id idUser title status createdAt").sort([['updatedAt', -1]]).populate('idUser');
+            const blogs = await BlogModel.find({ status: true }).select("_id idUser title status description createdAt").sort([['updatedAt', -1]]).populate('idUser', 'firstName lastName');
+            res.status(200).json({ blogs: blogs });
+        } catch (error) {
+            res.status(401).json("Error");
+        }
+    },
+
+    getBasicBlogs: async (req, res) => {
+        try {
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+            if (userID) {
+                const blogs = await BlogModel.find({ idUser: userID }).select('_id idUser title status createdAt').sort([['createdAt', -1]]);
+                console.log("Helooooooooo");
+                res.status(200).json({ blogs: blogs });
+            } else {
+                res.status(401).json({ message: "Not found user" });
+            }
+        } catch (error) {
+            
+        }
+    },
 
     getOwnerAllBlogs: async (req, res) => {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 const blogs = await BlogModel.find({ idUser: userID }).sort([['createdAt', -1]]);
+                console.log("Helooooooooo");
                 res.status(200).json({ blogs: blogs });
             } else {
-                res.status(404).json("Not found user");
+                res.status(401).json({ message: "Not found user" });
             }
         } catch (err) {
-            res.status(500).json("Error");
+            res.status(401).json({ message: "Error" });
         }
     },
 
@@ -71,12 +97,12 @@ const BlogController = {
                 //     quantity: 0,
                 // });
                 // await blogFavourites.save();
-                res.status(200).json(blog);
+                res.status(200).json({ blogs: blog });
             } else {
-                res.status(404).json("Add Blog Fail");
+                res.status(404).json({ message: "Add Blog Fail" });
             }
         } catch (err) {
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -147,10 +173,10 @@ const BlogController = {
                     { title: { $regex: '.*' + key + '.*' } },
                     { content: { $regex: '.*' + key + '.*' } }
                 ]
-            });
-            res.status(200).json(data);
+            }).select("_id idUser title status createdAt");
+            res.status(200).json({blogs: data});
         } catch (err) {
-            res.status(500).json("Error");
+            res.status(500).json({message: "Error"});
         }
     }
 }

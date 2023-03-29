@@ -37,5 +37,5 @@ app.get("/file/:filename", (req, res) => {
 app.use("/v1/auth", authRoute);
 app.use("/v1/admin", adminRoute);
 app.use("/v1/user", userRoute);
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log("Server is running..."));
