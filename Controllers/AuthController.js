@@ -10,10 +10,10 @@ const AuthController = {
             const checkUsername = await UserModel.findOne({ username: req.body.username });
             const checkEmail = await UserModel.findOne({ email: req.body.email });
             if (checkUsername) {
-                res.status(403).json({ message: "Username is Exist" });
+                res.status(401).json({ message: "Username is Exist" });
             }
             if (checkEmail) {
-                res.status(403).json({ message: "Email is Exist" });
+                res.status(401).json({ message: "Email is Exist" });
             }
             const salt = await bcrypt.genSalt(10);
             const hashedPass = await bcrypt.hash(req.body.password, salt);
@@ -31,7 +31,7 @@ const AuthController = {
             res.status(200).json({ message: "Success"});
         } catch (err) {
             console.error(err);
-            res.status(403).json({ message: "Error" });
+            res.status(401).json({ message: "Error" });
         }
     },
 
