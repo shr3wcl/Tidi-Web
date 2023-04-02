@@ -11,6 +11,7 @@ const TaskController = require("../Controllers/TaskController");
 const ScheduleController = require("../Controllers/ScheduleController");
 const StorageController = require('../Controllers/StorageController');
 const FileController = require("../Controllers/FileController");
+const NotificationController = require("../Controllers/NotifyController");
 const multer = require("multer");
 const path = require("path");
 const FollowController = require('../Controllers/FollowController');
@@ -109,5 +110,9 @@ route.delete("/project/schedule/delete/:idSchedule", authMiddleware.verifyAccess
 route.post("/project/schedule/edit/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.editSchedule);
 route.get("/project/schedule/detail/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.getDetail);
 
+// Notification
+route.get("/noti/:idUser", authMiddleware.verifyAccessToken, NotificationController.getAll);
+route.post("/noti/:idUser/store", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
+route.delete("/noti/:idUser/delete", authMiddleware.verifyAccessToken, NotificationController.deleteNotify);
 
 module.exports = route;
