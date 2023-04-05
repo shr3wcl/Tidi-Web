@@ -52,6 +52,7 @@ route.get("/blogs/public/basic/all", BlogController.getAllBlogBasicPublic);
 route.get("/blogs/:idBlog", BlogController.getDetailBlog)
 route.post("/blogs/store", authMiddleware.verifyOwnerOrAdmin, BlogController.addBlog);
 route.post("/blogs/edit/:idBlog", authMiddleware.verifyAccessToken, BlogController.editBlog);
+route.get("/blog/mobile/:id", BlogController.renderMobile);
 // route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
 route.post("/blogs/like/:idBlog", authMiddleware.verifyAccessToken,BlogController.increaseFavorites);
 route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);

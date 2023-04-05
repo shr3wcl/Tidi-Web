@@ -8,13 +8,17 @@ const userRoute = require("./Routes/user");
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
+const ejs = require("ejs");
+const BlogModel = require("./Models/Blog");
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+app.set("views", path.join(__dirname, "views"));
 
+app.set('view engine', 'ejs');
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json({
@@ -29,6 +33,10 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 100000,
     extended: true
 }));
+
+app.get("/get/:id", (req, res) => {
+    res.sendFile(__dirname + '/EditorJS/index.html');
+})
 
 app.get("/file/:filename", (req, res) => {
     res.send()

@@ -52,7 +52,6 @@ const BlogController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 const blogs = await BlogModel.find({ idUser: userID }).sort([['createdAt', -1]]);
-                console.log("Helooooooooo");
                 res.status(200).json({ blogs: blogs });
             } else {
                 res.status(401).json({ message: "Not found user" });
@@ -72,11 +71,11 @@ const BlogController = {
                 if (blog) {
                     res.status(200).json({ blog: data });
                 } else {
-                    res.status(404).json("Bad Request");
+                    res.status(404).json({message: "Bad request"});
                 }
             }
         } catch (err) {
-            res.status(404).json("Error");
+            res.status(404).json({message: "Error"});
         }
     },
 
@@ -178,6 +177,10 @@ const BlogController = {
         } catch (err) {
             res.status(500).json({message: "Error"});
         }
+    },
+
+    renderMobile: async (req, res) => {
+        res.sendFile(__dirname + '/../EditorJS/index.html');
     }
 }
 

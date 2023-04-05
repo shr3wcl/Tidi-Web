@@ -7,10 +7,9 @@ const FollowController = {
         try {
             const idUser = req.params.idUser;
             const data = await FollowModel.find({ idUser: idUser }).select('idFollow').sort([['updatedAt', -1]]).populate('idFollow', 'avatar firstName lastName');
-            console.log(data);
-            return res.status(200).json(data);
+            return res.status(200).json({followers: data});
         } catch (error) {
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -23,11 +22,13 @@ const FollowController = {
                     idFollow: req.body.idFollow
                 });
                 await newFollow.save();
-                res.status(200).json("Successful");
+                return res.status(200).json({ message: "Successful" });
             }
+            return res.status(403).json({ message: "Error" });
+
         } catch (error) {
             console.log(error);
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -36,10 +37,11 @@ const FollowController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 await FollowModel.findOneAndDelete({ idUser: userID, idFollow: req.body.idFollow });
-                return res.status(200).json("Successful");
+                return res.status(200).json({ message: "Successful" });
             }
+            return res.status(403).json({ message: "Error" });
         } catch (error) {
-            res.status(500).json("Error");
+            res.status(500).json({ message: "Error" });
         }
     },
 
@@ -48,10 +50,15 @@ const FollowController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 const data = await FollowModel.findOne({ idUser: userID, idFollow: req.body.idFollow });
-                return res.status(200).json(data);
+                if (data) {
+                    return res.status(200).json({ result: true });                    
+                } else {
+                    return res.status(200).json({ result: false });
+                }
             }
+            return res.status(401).json({ message: "Error" });
         } catch (error) {
-            res.status(500).json("Error");
+            res.status(500).json({message: "Error"});
         }
     }
 }
