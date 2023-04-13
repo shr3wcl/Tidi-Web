@@ -9,7 +9,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
 const ejs = require("ejs");
-const BlogModel = require("./Models/Blog");
+const BlogController = require("./Controllers/BlogController");
+const authMiddleware = require("./Middleware/authMiddleware");
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
@@ -36,6 +38,22 @@ app.use(bodyParser.urlencoded({
 
 app.get("/get/:id", (req, res) => {
     res.sendFile(__dirname + '/EditorJS/index.html');
+})
+
+app.get("/get/:id/edit", authMiddleware.verifyAccessToken, async (req, res) => {
+    try {
+        const user = await BlogController.getIdUserOfBlog(req.params.id);
+        const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+        if (user.idUser == userID) {
+            res.sendFile(__dirname + '/EditorJS/index.html');
+        }
+        else {
+            res.status(403).json({ message: "Error" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(403).json({ message: "Error" });
+    }
 })
 
 app.get("/file/:filename", (req, res) => {
