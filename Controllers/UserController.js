@@ -69,11 +69,14 @@ const UserController = {
                         const hashedPass = await bcrypt.hash(req.body.password, salt);
                         user.password = hashedPass;
                         await user.save();
-                        return res.status(200).json({ message: "Updated" });
+                        return res.status(200).json({ message: "Password update successful" });
                     }
                     else {
                         return res.status(400).json({ message: "Wrong password" });
                     }
+                }
+                else {
+                    res.status(500).json({ message: "Error" });
                 }
             }
             return res.status(403).json({ message: "User is empty" })

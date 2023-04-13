@@ -45,7 +45,7 @@ route.post("/follow/add/:idUser", authMiddleware.verifyAccessToken, FollowContro
 route.post("/follow/delete", authMiddleware.verifyAccessToken, FollowController.deleteFollower);
 route.post("/follow/check", authMiddleware.verifyAccessToken, FollowController.checkFollow);
 //Blog
-route.get("/blogs/basic/all", authMiddleware.verifyAccessToken, BlogController.getBasicBlogs)
+route.get("/blogs/basic/all", authMiddleware.verifyAccessToken, BlogController.getOwnerBasicBlogs);
 route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
 route.get("/blogs/public/all", BlogController.getAllBlogPublic);
 route.get("/blogs/public/basic/all", BlogController.getAllBlogBasicPublic);

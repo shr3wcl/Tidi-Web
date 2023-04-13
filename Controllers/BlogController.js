@@ -32,11 +32,11 @@ const BlogController = {
         }
     },
 
-    getBasicBlogs: async (req, res) => {
+    getOwnerBasicBlogs: async (req, res) => {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
-                const blogs = await BlogModel.find({ idUser: userID }).select('_id idUser title status createdAt').sort([['createdAt', -1]]);
+                const blogs = await BlogModel.find({ idUser: userID }).select('_id idUser title status description createdAt').sort([['createdAt', -1]]).populate('idUser', 'firstName lastName');
                 console.log("Helooooooooo");
                 res.status(200).json({ blogs: blogs });
             } else {
@@ -87,6 +87,7 @@ const BlogController = {
                     idUser: userID,
                     title: req.body.title,
                     content: req.body.content,
+                    description: req.body.description,
                     status: req.body.status
                 });
 
@@ -113,12 +114,14 @@ const BlogController = {
                 blog.title = req.body.title;
                 blog.content = req.body.content;
                 blog.status = req.body.status;
+                blog.description = req.body.description;
                 await blog.save();
                 res.status(200).json({ message: "Edit Blog Success" });
             } else {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
+            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
@@ -181,6 +184,15 @@ const BlogController = {
 
     renderMobile: async (req, res) => {
         res.sendFile(__dirname + '/../EditorJS/index.html');
+    },
+
+    getIdUserOfBlog: async (id) => {
+        try {
+            const blog = await BlogModel.findOne({ _id: id }).select('idUser');
+            return blog;
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
