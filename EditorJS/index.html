@@ -25,15 +25,23 @@
         return dataChange;
     }
     const getData = async () => {
+        let data;
         const id = window.location.pathname.split('/')[2];
         var readMode = true;
-        if(window.location.pathname.split('/')[3] == "edit"){
-            readMode=false;
+        if(window.location.pathname.split('/')[2] == "new"){
+            readMode = false;
+        }else if(window.location.pathname.split('/')[3] == "edit"){
+            readMode = false;
+            const rawData = await fetch(`/v1/user/blogs/${id}`).then(data => data.json());
+            data = rawData.blog.content;
+        }else{
+            readMode=true;
+            const rawData = await fetch(`/v1/user/blogs/${id}`).then(data => data.json());
+            data = rawData.blog.content;
         }
-        const rawData = await fetch(`/v1/user/blogs/${id}`).then(data => data.json());
-        const data = rawData.blog.content;
+        // const rawData = await fetch(`/v1/user/blogs/${id}`).then(data => data.json());
+        // data = rawData.blog.content;
         dataChange = data;
-        console.log(dataChange);
         const editor = await new EditorJS(
             {
                 readOnly: readMode,

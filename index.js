@@ -36,6 +36,21 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+app.get("/get/new", authMiddleware.verifyAccessToken, async (req, res) => {
+    try {
+        const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+        if (userID) {
+            res.sendFile(__dirname + '/EditorJS/index.html');
+        }
+        else {
+            res.status(403).json({ message: "Error" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(403).json({ message: "Error" });
+    }
+})
+
 app.get("/get/:id", (req, res) => {
     res.sendFile(__dirname + '/EditorJS/index.html');
 })
@@ -55,6 +70,8 @@ app.get("/get/:id/edit", authMiddleware.verifyAccessToken, async (req, res) => {
         res.status(403).json({ message: "Error" });
     }
 })
+
+
 
 app.get("/file/:filename", (req, res) => {
     res.send()
