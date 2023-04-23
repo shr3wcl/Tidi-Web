@@ -15,6 +15,7 @@ const NotificationController = require("../Controllers/NotifyController");
 const multer = require("multer");
 const path = require("path");
 const FollowController = require('../Controllers/FollowController');
+const Blog = require('../Models/Blog');
 // const { uploadFile, getAllFile, getFile } = require('../Controllers/FileController');
 
 const storage = multer.diskStorage({
@@ -49,14 +50,17 @@ route.get("/blogs/basic/all", authMiddleware.verifyAccessToken, BlogController.g
 route.get("/blogs/all", authMiddleware.verifyAccessToken, BlogController.getOwnerAllBlogs);
 route.get("/blogs/public/all", BlogController.getAllBlogPublic);
 route.get("/blogs/public/basic/all", BlogController.getAllBlogBasicPublic);
-route.get("/blogs/:idBlog", BlogController.getDetailBlog)
 route.post("/blogs/store", authMiddleware.verifyOwnerOrAdmin, BlogController.addBlog);
 route.post("/blogs/edit/:idBlog", authMiddleware.verifyAccessToken, BlogController.editBlog);
 route.get("/blog/mobile/:id", BlogController.renderMobile);
-// route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
 route.post("/blogs/like/:idBlog", authMiddleware.verifyAccessToken,BlogController.increaseFavorites);
 route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogController.deleteBlog);
 route.post("/blogs/search", BlogController.searchBlog);
+route.get("/blogs/get4search", BlogController.getAllBlogToSearch);
+route.get("/blogs/:idBlog", BlogController.getDetailBlog)
+
+// route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
+
 
 //Comment
 route.get("/blogs/comment/:idBlog", CommandController.getCommand);
@@ -112,8 +116,8 @@ route.post("/project/schedule/edit/:idSchedule", authMiddleware.verifyAccessToke
 route.get("/project/schedule/detail/:idSchedule", authMiddleware.verifyAccessToken, ScheduleController.getDetail);
 
 // Notification
-route.get("/noti/:idUser", authMiddleware.verifyAccessToken, NotificationController.getAll);
-route.post("/noti/:idUser/store", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
-route.delete("/noti/:idUser/delete", authMiddleware.verifyAccessToken, NotificationController.deleteNotify);
+route.get("/notify/get", authMiddleware.verifyAccessToken, NotificationController.getAll);
+route.post("/notify/store", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
+route.delete("/notify/delete", authMiddleware.verifyAccessToken, NotificationController.deleteNotify);
 
 module.exports = route;

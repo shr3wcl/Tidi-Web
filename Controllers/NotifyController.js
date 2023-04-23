@@ -4,9 +4,10 @@ const jwt = require('jsonwebtoken');
 const NotificationController = {
     getAll: async (req, res) => {
         try {
-            const idUser = req.params.idUser;
-            if (idUser) {
-                const notification = await NotiModel.find({ idUser: idUser }).sort([['createdAt', -1]]);
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
+            console.log(userID);
+            if (userID) {
+                const notification = await NotifyModel.find({ idUser: userID }).sort([['createdAt', -1]]);
                 return res.status(200).json({ notification });
             }
             return res.status(403).json({ message: "Error" });
@@ -20,7 +21,7 @@ const NotificationController = {
         try {
             const idUser = req.params.idUser;            
             if (idUser) {
-                const notification = await NotiModel({
+                const notification = await NotifyModel({
                     idUser: idUser,
                     idUserTarget: req.body.idUserTarget ?? "",
                     idTarget: req.body.idTarget ?? "",
