@@ -14,7 +14,9 @@ const NotifySchema = mongoose.Schema({
     idTarget: {
         type: String
     },
-
+    typeNotify: {
+        type: String
+    },
     content: {
         type: String,
         required: true
