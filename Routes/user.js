@@ -58,7 +58,7 @@ route.delete("/blogs/delete/:idBlog", authMiddleware.verifyAccessToken, BlogCont
 route.post("/blogs/search", BlogController.searchBlog);
 route.get("/blogs/get4search", BlogController.getAllBlogToSearch);
 route.get("/blogs/:idBlog", BlogController.getDetailBlog)
-
+route.get("/blogs/overview/:idBlog", BlogController.getOverview);
 // route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
 
 

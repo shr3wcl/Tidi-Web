@@ -128,7 +128,9 @@ const BlogController = {
 
     deleteBlog: async (req, res) => {
         try {
+            console.log(1);
             const idBlog = req.params?.idBlog;
+            console.log(idBlog);
             if (idBlog) {
                 await BlogModel.findByIdAndDelete(idBlog);
                 res.status(200).json({ message: "Delete Success" });
@@ -136,6 +138,7 @@ const BlogController = {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
+            console.log(err);
             res.status(500).json({ message: "Error" });
         }
     },
@@ -144,40 +147,42 @@ const BlogController = {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idBlog = req.params?.idBlog;
-            if (idBlog) {
-                const blog = await FavouriteModel.findOne({ idBlog: idBlog }, (err, favouriteBlog) => {
-                    if (err) {
-                        res.status(403).json({ message: "Error" });
-                    } else {
-                        console.log(favouriteBlog);
-                    }
-                });
-                if (blog) {
-                    blog.quantity++;
-                    blog.save();
-                    res.status(200).json({ message: "Đã like" });
+            const blog = await BlogModel.findOne({ idBlog: idBlog });
+            if (blog && userID) {
+                const checkData = await FavouriteModel.findOne({ idUser: userID, idBlog: idBlog });
+                if (!checkData) {
+                    const data = await FavouriteModel({
+                        idBlog: idBlog,
+                        idUser: userID
+                    });
+                    await data.save();
+                    res.status(200).json({ message: "Success" });
                 } else {
-                    res.status(403).json({ message: "Yêu cầu không hợp lệ" });
+                    res.status(200).json({ message: "You liked this post already" });
                 }
             } else {
-                res.status(403).json({ message: "Yêu cầu không hợp lệ" });
+                res.status(403).json({ message: "Error" });
             }
         } catch (err) {
-            res.status(500).json("Lỗi");
+            res.status(500).json({message: "Error"});
         }
     },
 
     searchBlog: async (req, res) => {
         try {
             const key = req.body.key;
-            const data = await BlogModel.find({
+            console.log(123);
+            console.log(key);
+            const data = await BlogModel.find({ 
                 $or: [
                     { title: { $regex: '.*' + key + '.*' } },
                     { content: { $regex: '.*' + key + '.*' } }
                 ]
-            }).select("_id idUser title status createdAt");
+            }).select("_id idUser title status description createdAt").sort([['updatedAt', -1]]).populate('idUser', 'firstName lastName');
+            console.log();
             res.status(200).json({blogs: data});
-        } catch (err) {
+        } catch (error) {
+            console.log(err);
             res.status(500).json({message: "Error"});
         }
     },
@@ -192,6 +197,27 @@ const BlogController = {
             return blog;
         } catch (error) {
             console.log(error);
+        }
+    },
+
+    getAllBlogToSearch: async (req, res) => {
+        try {
+            const blogs = await BlogModel.find().select("title");
+            const users = await UserModel.find().select("firstName lastName");
+            res.status(200).json({ data: { blogs, users }});
+        } catch (err) {
+            res.status(403).json({ message: "Error" });
+        }
+    },
+
+    getOverview: async (req, res) => {
+        try {
+            console.log(123123);
+            const blogs = await BlogModel.findOne({ _id: req.params.idBlog }).select("_id idUser title status description createdAt").populate('idUser', 'firstName lastName avatar');
+            const likes = await FavouriteModel.find({ idBlog: req.params.idBlog }).populate('idUser', 'firstName lastName');
+            res.status(200).json({blog: blogs, like: likes});
+        } catch (error) {
+            res.status(403).json({ message: "Error" });
         }
     }
 }
