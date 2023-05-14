@@ -41,6 +41,7 @@ route.post("/change/avatar", UserController.changeAvatar);
 // route.get("/info")
 
 //Follow
+route.get("/following/all/:idUser", FollowController.getAllFollowing);
 route.get("/follow/all/:idUser", FollowController.getAllFollow);
 route.post("/follow/add/:idUser", authMiddleware.verifyAccessToken, FollowController.addFollower);
 route.post("/follow/delete", authMiddleware.verifyAccessToken, FollowController.deleteFollower);
@@ -59,13 +60,14 @@ route.post("/blogs/search", BlogController.searchBlog);
 route.get("/blogs/get4search", BlogController.getAllBlogToSearch);
 route.get("/blogs/:idBlog", BlogController.getDetailBlog)
 route.get("/blogs/overview/:idBlog", BlogController.getOverview);
+route.get("/blogs/public/basic/owner/:idUser", BlogController.getAllBlogBasicOfUser)
 // route.post("/blogs/detail/:idBlog", authMiddleware.verifyOwnerOrAdmin, BlogController.getDetailBlog);
 
 
 //Comment
 route.get("/blogs/comment/:idBlog", CommandController.getCommand);
-route.post("/comment/add/:idBlog", authMiddleware.verifyAccessToken, CommandController.addCommand);
-route.delete("/comment/:idCommand", authMiddleware.verifyAccessToken, CommandController.deleteCommand);
+route.post("/blogs/comment/add/:idBlog", authMiddleware.verifyAccessToken, CommandController.addCommand);
+route.delete("/comment/delete/:idCommand", authMiddleware.verifyAccessToken, CommandController.deleteCommand);
 route.post("/comment/edit/:idCommand", authMiddleware.verifyAccessToken, CommandController.editCommand);
 
 //Storage

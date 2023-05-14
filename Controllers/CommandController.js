@@ -3,13 +3,14 @@ const jwt = require("jsonwebtoken");
 
 const CommandController = {
     addCommand: async (req, res) => {
+        console.log(1);
         try {
+            const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             const idBlog = req.params.idBlog;
             if (idBlog) {
-                const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
                 const newCommand = await CommandOBJ({
                     idBlog: idBlog,
-                    idUser: req.body.idUser,
+                    idUser: userID,
                     content: req.body.content
                 })
                 newCommand.save();
@@ -19,8 +20,8 @@ const CommandController = {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            console.log(err);
-            res.status(500).json("Lỗi");
+            console.log("Loi: ", err);
+            res.status(500).json({message: "Error"});
         }
     },
 
@@ -28,14 +29,14 @@ const CommandController = {
         try {
             const idBlog = req.params.idBlog;
             if (idBlog) {
-                const command = await CommandOBJ.find({ idBlog: idBlog }).select('_id content idUser createdAt').sort('-createdAt').populate('idUser', 'avatar firstName lastName _id');
+                const command = await CommandOBJ.find({ idBlog: idBlog }).select('_id content idUser createdAt').sort('-createdAt').populate('idUser', 'avatar firstName lastName');
                 res.status(200).json(command);
             }
             else {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            console.log(err);
+            console.log("err", err);
             res.status(500).json("Error");
         }
     },
@@ -54,7 +55,7 @@ const CommandController = {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            console.log(err);
+            console.log("1:", err);
             res.status(500).json("Lỗi");
         }
     },

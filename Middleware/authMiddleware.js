@@ -18,7 +18,7 @@ const authMiddleware = {
                 res.status(403).json({ message: "Bạn không có quyền truy cập" });
             }
         } catch (err) {
-            console.log(err);
+            console.log("Auth: ", err);
             res.status(500).json({ message: "Yêu cầu không hợp lệ" });
         }
     },

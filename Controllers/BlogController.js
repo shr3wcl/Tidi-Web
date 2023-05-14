@@ -37,13 +37,24 @@ const BlogController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 const blogs = await BlogModel.find({ idUser: userID }).select('_id idUser title status description createdAt').sort([['createdAt', -1]]).populate('idUser', 'firstName lastName');
-                console.log("Helooooooooo");
                 res.status(200).json({ blogs: blogs });
             } else {
                 res.status(401).json({ message: "Not found user" });
             }
         } catch (error) {
             
+        }
+    },
+
+    getAllBlogBasicOfUser: async (req, res) => {
+        try {
+            const idUser = req.params.idUser;
+            if (idUser) {
+                const blogs = await BlogModel.find({ idUser: idUser, status: true }).select('_id idUser title status description createdAt').sort([['createdAt', -1]]).populate('idUser', 'firstName lastName');
+                res.status(200).json({ blogs: blogs });
+            }
+        } catch (error) {
+            res.status(401).json({ message: "Not found user" });
         }
     },
 
