@@ -3,10 +3,20 @@ const { find } = require("../Models/Project");
 const jwt = require("jsonwebtoken");
 
 const FollowController = {
+    getAllFollowing: async (req, res) => {
+        try {
+            const idUser = req.params.idUser;
+            const data = await FollowModel.find({ idFollow: idUser }).select('idFollow').sort([['updatedAt', -1]]).populate('idUser', 'avatar firstName lastName createdAt');
+            return res.status(200).json({ followers: data });
+        } catch (error) {
+            res.status(500).json({ message: "Error" });
+        }
+    },
+
     getAllFollow: async (req, res) => {
         try {
             const idUser = req.params.idUser;
-            const data = await FollowModel.find({ idUser: idUser }).select('idFollow').sort([['updatedAt', -1]]).populate('idFollow', 'avatar firstName lastName');
+            const data = await FollowModel.find({ idUser: idUser }).select('idFollow').sort([['updatedAt', -1]]).populate('idFollow', 'avatar firstName lastName createdAt');
             return res.status(200).json({followers: data});
         } catch (error) {
             res.status(500).json({ message: "Error" });
@@ -16,10 +26,11 @@ const FollowController = {
     addFollower: async (req, res) => {
         try {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id ?? false;
+            console.log(userID, req.params.idUser);
             if (userID) {
                 const newFollow = await FollowModel({
                     idUser: userID,
-                    idFollow: req.body.idFollow
+                    idFollow: req.params.idUser
                 });
                 await newFollow.save();
                 return res.status(200).json({ message: "Successful" });
@@ -58,6 +69,7 @@ const FollowController = {
             }
             return res.status(401).json({ message: "Error" });
         } catch (error) {
+            console.log(error);
             res.status(500).json({message: "Error"});
         }
     }
