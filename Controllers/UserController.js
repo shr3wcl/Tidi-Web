@@ -87,7 +87,7 @@ const UserController = {
 
     getInfo: async (req, res) => {
         try {
-            const user = await UserModel.findById(req.params.idUser).select("_id firstName lastName email gender avatar");
+            const user = await UserModel.findById(req.params.idUser).select("_id firstName lastName email gender avatar birthday bio");
             const blog = await BlogModel.find({ idUser: req.params.idUser, status: true });
             const projects = await ManagerModel.find({ idUser: req.params.idUser }).populate({
                 path: 'idProject',
