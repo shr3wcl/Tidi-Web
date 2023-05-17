@@ -122,4 +122,6 @@ route.get("/notify/get", authMiddleware.verifyAccessToken, NotificationControlle
 route.post("/notify/store/:idUser", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
 route.delete("/notify/delete", authMiddleware.verifyAccessToken, NotificationController.deleteNotify);
 
+route.post("/users/search", UserController.searchUser);
+
 module.exports = route;
