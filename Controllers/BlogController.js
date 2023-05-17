@@ -132,16 +132,13 @@ const BlogController = {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            console.log(err);
             res.status(500).json("Lỗi");
         }
     },
 
     deleteBlog: async (req, res) => {
         try {
-            console.log(1);
             const idBlog = req.params?.idBlog;
-            console.log(idBlog);
             if (idBlog) {
                 await BlogModel.findByIdAndDelete(idBlog);
                 res.status(200).json({ message: "Delete Success" });
@@ -149,7 +146,6 @@ const BlogController = {
                 res.status(403).json({ message: "Bad Request" });
             }
         } catch (err) {
-            console.log(err);
             res.status(500).json({ message: "Error" });
         }
     },
@@ -190,10 +186,8 @@ const BlogController = {
                     { content: { $regex: '.*' + key + '.*' } }
                 ]
             }).select("_id idUser title status description createdAt").sort([['updatedAt', -1]]).populate('idUser', 'firstName lastName');
-            console.log();
             res.status(200).json({blogs: data});
         } catch (error) {
-            console.log(err);
             res.status(500).json({message: "Error"});
         }
     },
@@ -223,7 +217,6 @@ const BlogController = {
 
     getOverview: async (req, res) => {
         try {
-            console.log(123123);
             const blogs = await BlogModel.findOne({ _id: req.params.idBlog }).select("_id idUser title status description createdAt").populate('idUser', 'firstName lastName avatar');
             const likes = await FavouriteModel.find({ idBlog: req.params.idBlog }).populate('idUser', 'firstName lastName');
             res.status(200).json({blog: blogs, like: likes});

@@ -9,6 +9,20 @@ const { use } = require("../Routes/user");
 
 
 const UserController = {
+    searchUser: async (req, res) => {
+        try {
+            const key = req.body.key;
+            const data = await UserModel.find({
+                $or: [
+                    { lastName: { $regex: '.*' + key + '.*' } },
+                    { firstName: { $regex: '.*' + key + '.*' } }
+                ]
+            }).select("_id firstName lastName avatar").sort([['firstName', 1]]);
+            res.status(200).json({ users: data });
+        } catch (error) {
+            res.status(500).json({ message: "Error" });
+        }
+    },
     // getInfo: async (req, res) => {
     //     try {
     //         // const userID = jwt.decode(req.headers.token.split(" ")[1]).id ?? req.params.idUser;
@@ -31,7 +45,6 @@ const UserController = {
             const userID = jwt.decode(req.headers.token.split(" ")[1]).id;
             if (userID) {
                 const user = await UserModel.findById(userID);
-                console.log(user);
                 if (user) {
                     user.firstName = req.body.firstName;
                     user.lastName = req.body.lastName;
@@ -51,7 +64,6 @@ const UserController = {
                 res.status(403).json({ message: "Bad request" });
             }
         } catch (err) {
-            console.log(err);
             res.status(401).json("Error");
         }
     },
@@ -97,7 +109,6 @@ const UserController = {
             res.status(200).json({ user });
         }
         catch (err) {
-            console.log(err);
             res.status(200).json({ message: "Error" });
         }
     },
@@ -114,7 +125,6 @@ const UserController = {
             }
 
         } catch (error) {
-            console.log(error);
             res.status(500).json({ message: "Error" });
         }
     }
