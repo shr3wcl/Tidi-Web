@@ -119,7 +119,7 @@ route.get("/project/schedule/detail/:idSchedule", authMiddleware.verifyAccessTok
 
 // Notification
 route.get("/notify/get", authMiddleware.verifyAccessToken, NotificationController.getAll);
-route.post("/notify/store", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
+route.post("/notify/store/:idUser", authMiddleware.verifyAccessToken, NotificationController.storeNotify);
 route.delete("/notify/delete", authMiddleware.verifyAccessToken, NotificationController.deleteNotify);
 
 module.exports = route;
