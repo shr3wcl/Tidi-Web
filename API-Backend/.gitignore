@@ -1,5 +1,0 @@
-./node_modules/*
-.env
-.idea/workspace.xml
-.idea/vcs.xml
-node_modules
